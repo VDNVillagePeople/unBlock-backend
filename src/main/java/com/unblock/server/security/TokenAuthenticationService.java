@@ -1,4 +1,4 @@
-package com.unblock.server;
+package com.unblock.server.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

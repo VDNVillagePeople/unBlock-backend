@@ -1,5 +1,7 @@
-package com.unblock.server;
+package com.unblock.server.security;
 
+import com.unblock.server.security.JWTAuthenticationFilter;
+import com.unblock.server.security.JWTLoginFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

@@ -1,4 +1,4 @@
-package com.unblock.server;
+package com.unblock.server.security;
 
 public class AccountCredentials {
 

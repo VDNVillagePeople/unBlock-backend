@@ -1,4 +1,4 @@
-package com.unblock.server;
+package com.unblock.server.security;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
