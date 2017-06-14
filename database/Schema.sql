@@ -5,8 +5,8 @@ USE unblock_prod;
 CREATE TABLE IF NOT EXISTS User (
     id INT(11) NOT NULL AUTO_INCREMENT,
     username VARCHAR(255),
-    email VARCHAR(255),
     password VARCHAR(255),
+    email VARCHAR(255),
     PRIMARY KEY (id)
 );
 
