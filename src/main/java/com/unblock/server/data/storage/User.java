@@ -1,4 +1,4 @@
-package com.unblock.server.data;
+package com.unblock.server.data.storage;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

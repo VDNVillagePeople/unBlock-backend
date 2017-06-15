@@ -1,6 +1,6 @@
 package com.unblock.server.repositories;
 
-import com.unblock.server.data.User;
+import com.unblock.server.data.storage.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
