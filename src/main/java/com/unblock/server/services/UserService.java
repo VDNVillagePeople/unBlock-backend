@@ -12,4 +12,6 @@ public interface UserService {
     void create(User user);
 
     Optional<User> getByUsername(String username);
+
+    Optional<User> getByEmail(String email);
 }
