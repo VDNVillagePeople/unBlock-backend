@@ -32,9 +32,9 @@ public class LoginController {
     }
 
     private User getUser(Login login) throws LoginFailedException {
-        Optional<User> user = userService.getByUsername(login.getUsername());
+        Optional<User> user = userService.getByUsername(login.getUsernameOrEmail());
         if (!user.isPresent()) {
-            user = userService.getByEmail(login.getEmail());
+            user = userService.getByEmail(login.getUsernameOrEmail());
         }
         if (!user.isPresent()) {
             throwUnauthorized();

@@ -5,9 +5,7 @@ option java_package = "com.unblock.proto";
 option java_multiple_files = true;
 
 message Login {
-    string username = 1;
+    string usernameOrEmail = 1;
 
-    string email = 2;
-
-    string password = 3;
+    string password = 2;
 }
