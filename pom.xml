@@ -97,7 +97,7 @@
                         </goals>
 						<configuration>
 							<protocVersion>3.3.0</protocVersion>
-                            <inputDirectories>src/main/proto</inputDirectories>
+                            <inputDirectories>src/main/protos</inputDirectories>
 						</configuration>
                     </execution>
                 </executions>
