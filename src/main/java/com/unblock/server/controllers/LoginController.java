@@ -1,6 +1,6 @@
 package com.unblock.server.controllers;
 
-import com.unblock.proto.Login;
+import com.unblock.proto.LoginRequest;
 import com.unblock.server.data.storage.User;
 import com.unblock.server.exception.LoginFailedException;
 import com.unblock.server.security.TokenAuthenticationService;
@@ -24,17 +24,17 @@ public class LoginController {
     private PasswordManager passwordManager;
 
     @RequestMapping("/login")
-    public void login(@RequestBody Login login, HttpServletResponse response) throws LoginFailedException {
-        User user = getUser(login);
-        checkPassword(login.getPassword(), user.getPassword());
+    public void login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) throws LoginFailedException {
+        User user = getUser(loginRequest);
+        checkPassword(loginRequest.getPassword(), user.getPassword());
 
         TokenAuthenticationService.addAuthentication(response, user.getUsername());
     }
 
-    private User getUser(Login login) throws LoginFailedException {
-        Optional<User> user = userService.getByUsername(login.getUsernameOrEmail());
+    private User getUser(LoginRequest loginRequest) throws LoginFailedException {
+        Optional<User> user = userService.getByUsername(loginRequest.getUsernameOrEmail());
         if (!user.isPresent()) {
-            user = userService.getByEmail(login.getUsernameOrEmail());
+            user = userService.getByEmail(loginRequest.getUsernameOrEmail());
         }
         if (!user.isPresent()) {
             throwUnauthorized();

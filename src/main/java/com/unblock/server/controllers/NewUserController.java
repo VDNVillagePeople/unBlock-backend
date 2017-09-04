@@ -1,6 +1,6 @@
 package com.unblock.server.controllers;
 
-import com.unblock.proto.NewUser;
+import com.unblock.proto.NewUserRequest;
 import com.unblock.server.data.storage.User;
 import com.unblock.server.exception.EmailAlreadyExistsException;
 import com.unblock.server.exception.UsernameAlreadyExistsException;
@@ -25,12 +25,12 @@ public class NewUserController {
 
     @RequestMapping(value = "/newUser", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
-    public void newUser(@RequestBody NewUser newUser, HttpServletResponse response) throws Exception {
-        verifyUsernameUniqueness(newUser.getUsername());
-        verifyEmailUniqueness(newUser.getEmail());
+    public void newUser(@RequestBody NewUserRequest newUserRequest, HttpServletResponse response) throws Exception {
+        verifyUsernameUniqueness(newUserRequest.getUsername());
+        verifyEmailUniqueness(newUserRequest.getEmail());
 
-        createUser(newUser);
-        TokenAuthenticationService.addAuthentication(response, newUser.getUsername());
+        createUser(newUserRequest);
+        TokenAuthenticationService.addAuthentication(response, newUserRequest.getUsername());
     }
 
     private void verifyUsernameUniqueness(String username) throws UsernameAlreadyExistsException {
@@ -47,11 +47,11 @@ public class NewUserController {
         }
     }
 
-    private void createUser(NewUser newUser) {
+    private void createUser(NewUserRequest newUserRequest) {
         User user = new User();
-        user.setUsername(newUser.getUsername());
-        user.setEmail(newUser.getEmail());
-        user.setPassword(passwordManager.getEncryptedPassword(newUser.getPassword()));
+        user.setUsername(newUserRequest.getUsername());
+        user.setEmail(newUserRequest.getEmail());
+        user.setPassword(passwordManager.getEncryptedPassword(newUserRequest.getPassword()));
         userService.create(user);
     }
 }
