@@ -9,14 +9,18 @@ public class Point {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
-
   private float x;
-
   private float y;
+  private int orderIndex;
+  @ManyToOne
+  @JoinColumn(name="block_id") private Block block;
 
-  private int order;
+  public Point() {}
 
-  @ManyToOne private Block block;
+  public Point(float x, float y) {
+    this.x = x;
+    this.y = y;
+  }
 
   public int getId() {
     return id;
@@ -42,12 +46,12 @@ public class Point {
     this.y = y;
   }
 
-  public int getOrder() {
-    return order;
+  public int getOrderIndex() {
+    return orderIndex;
   }
 
-  public void setOrder(int order) {
-    this.order = order;
+  public void setOrderIndex(int orderIndex) {
+    this.orderIndex = orderIndex;
   }
 
   public Block getBlock() {
@@ -67,10 +71,34 @@ public class Point {
         + x
         + ", y="
         + y
-        + ", order="
-        + order
+        + ", orderIndex="
+        + orderIndex
         + ", block="
-        + block
+        + block.getId()
         + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Point point = (Point) o;
+
+    if (id != point.id) return false;
+    if (Float.compare(point.x, x) != 0) return false;
+    if (Float.compare(point.y, y) != 0) return false;
+    if (orderIndex != point.orderIndex) return false;
+    return block != null ? block.getId() == point.block.getId() : point.block == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id;
+    result = 31 * result + (x != +0.0f ? Float.floatToIntBits(x) : 0);
+    result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+    result = 31 * result + orderIndex;
+    result = 31 * result + (block != null ? block.getId() : 0);
+    return result;
   }
 }

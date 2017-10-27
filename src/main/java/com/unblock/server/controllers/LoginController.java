@@ -28,6 +28,7 @@ public class LoginController {
     checkPassword(loginRequest.getPassword(), user.getPassword());
 
     TokenAuthenticationService.addAuthentication(response, user.getUsername());
+    response.setStatus(204);
   }
 
   private User getUser(LoginRequest loginRequest) throws LoginFailedException {

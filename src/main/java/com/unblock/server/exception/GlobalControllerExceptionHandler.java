@@ -19,7 +19,7 @@ public class GlobalControllerExceptionHandler {
   @ExceptionHandler(EmailAlreadyExistsException.class)
   public void emailExists() {}
 
-  @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Neighborhood not found.")
-  @ExceptionHandler(NeighborhoodNotFoundException.class)
-  public void neighborhoodNotFound() {}
+  @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Resource not found.")
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public void ResourceNotFound() {}
 }

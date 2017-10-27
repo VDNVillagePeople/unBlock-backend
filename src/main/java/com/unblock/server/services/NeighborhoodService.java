@@ -1,17 +1,20 @@
 package com.unblock.server.services;
 
 import com.unblock.server.data.storage.Neighborhood;
-import com.unblock.server.data.storage.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
 public interface NeighborhoodService {
-    Neighborhood create(Neighborhood neighborhood);
+  Neighborhood create(Neighborhood request);
 
-    Optional<Neighborhood> getById(int id);
+  Neighborhood save(Neighborhood request);
+
+  Optional<Neighborhood> getById(int id);
+
+  List<Neighborhood> getAll();
 }
-

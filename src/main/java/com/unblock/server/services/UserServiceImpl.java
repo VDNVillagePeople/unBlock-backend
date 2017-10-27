@@ -12,21 +12,20 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Override
-    public void create(User user) {
-        userRepository.save(user);
-    }
+  @Override
+  public void create(User user) {
+    userRepository.save(user);
+  }
 
-    @Override
-    public Optional<User> getByUsername(String username) {
-        return userRepository.findByUsername(username).stream().findFirst();
-    }
+  @Override
+  public Optional<User> getByUsername(String username) {
+    return userRepository.findByUsername(username).stream().findFirst();
+  }
 
-    @Override
-    public Optional<User> getByEmail(String email) {
-        return userRepository.findByEmail(email).stream().findFirst();
-    }
+  @Override
+  public Optional<User> getByEmail(String email) {
+    return userRepository.findByEmail(email).stream().findFirst();
+  }
 }
