@@ -24,6 +24,9 @@ public class LoginController {
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   public void login(@RequestBody LoginRequest loginRequest, HttpServletResponse response)
       throws LoginFailedException {
+    System.out.println("Request");
+    System.out.println("usernameoremail: " + loginRequest.getUsernameOrEmail());
+    System.out.println(loginRequest);
     User user = getUser(loginRequest);
     checkPassword(loginRequest.getPassword(), user.getPassword());
 

@@ -56,15 +56,16 @@ public class BlockController {
             .map(PointConverter::toJava)
             .collect(Collectors.toList());
 
-    Block newBlock = new Block();
     int index = 0;
     for (Point point : points) {
-      point.setBlock(newBlock);
+      point.setBlock(block);
       point.setOrderIndex(index++);
     }
 
-    block.getPoints().clear();
     block.setPoints(points);
+
+    System.out.println("Printing block!");
+    System.out.println(block);
 
     blockService.update(block);
 
