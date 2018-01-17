@@ -1,6 +1,7 @@
 package com.unblock.server.data.storage;
 
 import com.unblock.proto.BlockOuterClass.BlockStatus;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,8 +12,9 @@ import java.util.Set;
 public class Block {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  private String id;
 
   @Enumerated(EnumType.STRING)
   private BlockStatus status;
@@ -36,11 +38,17 @@ public class Block {
   )
   private Set<Attraction> attractions;
 
-  public int getId() {
+  public Block() {}
+
+  public Block(String id) {
+    this.setId(id);
+  }
+
+  public String getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(String id) {
     this.id = id;
   }
 

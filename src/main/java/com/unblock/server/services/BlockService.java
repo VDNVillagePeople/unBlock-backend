@@ -4,6 +4,7 @@ import com.unblock.server.data.storage.Block;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -11,7 +12,9 @@ import java.util.Optional;
 public interface BlockService {
   Block create(Block request);
 
-  Block update(Block request);
+  Block save(Block request);
 
-  Optional<Block> getById(int id);
+  Optional<Block> getById(String id);
+
+  List<Block> listByNeighborhood(String neighborhoodId);
 }

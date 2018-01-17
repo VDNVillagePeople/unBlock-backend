@@ -1,6 +1,7 @@
 package com.unblock.server.data.storage;
 
 import com.unblock.proto.AttractionOuterClass.AttractionStatus;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -9,8 +10,9 @@ import javax.persistence.*;
 public class Attraction {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  private String id;
 
   @Enumerated(EnumType.STRING)
   private AttractionStatus status;
@@ -26,11 +28,17 @@ public class Attraction {
   private float x;
   private float y;
 
-  public int getId() {
+  public Attraction() {}
+
+  public Attraction(String id) {
+    this.setId(id);
+  }
+
+  public String getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(String id) {
     this.id = id;
   }
 

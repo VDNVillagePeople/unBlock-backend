@@ -12,7 +12,9 @@ public class BlockConverter {
 
   public static BlockOuterClass.Block toProto(Block block) {
     return BlockOuterClass.Block.newBuilder()
-        .setId(Integer.toString(block.getId()))
+        .setId(block.getId())
+        .setStatus(block.getStatus())
+        .setNeighborhoodId(block.getNeighborhood().getId())
         .setName(block.getName())
         .setBounds(
             BoundsOuterClass.Bounds.newBuilder()

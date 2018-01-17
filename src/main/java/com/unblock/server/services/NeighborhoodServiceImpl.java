@@ -25,7 +25,7 @@ public class NeighborhoodServiceImpl implements NeighborhoodService {
   }
 
   @Override
-  public Optional<Neighborhood> getById(int id) {
+  public Optional<Neighborhood> getById(String id) {
     Optional<Neighborhood> neighborhood = neighborhoodRepository.findById(id).stream().findFirst();
 
     return neighborhood;
@@ -37,7 +37,7 @@ public class NeighborhoodServiceImpl implements NeighborhoodService {
   }
 
   @Override
-  public List<Neighborhood> getAll() {
-    return neighborhoodRepository.findAll();
+  public List<Neighborhood> listByCity(String cityId) {
+    return neighborhoodRepository.findByCityId(cityId);
   }
 }

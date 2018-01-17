@@ -1,10 +1,11 @@
 package com.unblock.server.controllers;
 
-import com.unblock.proto.NeighborhoodOuterClass;
-import com.unblock.server.data.storage.Neighborhood;
-import com.unblock.server.data.storage.converters.NeighborhoodConverter;
+import com.unblock.proto.CityOuterClass;
+import com.unblock.proto.CityOuterClass.CityStatus;
+import com.unblock.server.data.storage.City;
+import com.unblock.server.data.storage.converters.CityConverter;
 import com.unblock.server.exception.ResourceNotFoundException;
-import com.unblock.server.services.NeighborhoodService;
+import com.unblock.server.services.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,45 +13,53 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
-public class NeighborhoodController {
+public class CityController {
 
-  @Autowired private NeighborhoodService neighborhoodService;
+  @Autowired private CityService cityService;
 
-  @RequestMapping(value = "neighborhood", method = RequestMethod.POST)
-  public NeighborhoodOuterClass.Neighborhood createNeighborHood(
-      @RequestBody NeighborhoodOuterClass.CreateNeighborhoodRequest request) {
-    Neighborhood neighborhood = new Neighborhood();
-    neighborhood.setTitle(request.getName());
-    return NeighborhoodConverter.toProto(neighborhoodService.create(neighborhood));
+  @RequestMapping(value = "/v1/city", method = RequestMethod.POST)
+  public CityOuterClass.City createCity(@RequestBody CityOuterClass.CreateCityRequest request) {
+    City city = new City();
+    city.setName(request.getInfo().getName());
+    city.setStatus(CityStatus.CITY_LIVE);
+    return CityConverter.toProto(cityService.create(city));
   }
 
-  @RequestMapping(value = "/neighborhoods", method = RequestMethod.GET)
+  @RequestMapping(value = "/v1/cities", method = RequestMethod.GET)
   @ResponseStatus(value = HttpStatus.OK)
-  public NeighborhoodOuterClass.ListNeighborhoodResponse listNeighborhoods() throws Exception {
-    System.out.println(neighborhoodService.getAll());
-    NeighborhoodOuterClass.ListNeighborhoodResponse temp =
-        NeighborhoodOuterClass.ListNeighborhoodResponse.newBuilder()
-            .addAllNeighborhoods(
-                neighborhoodService
-                    .getAll()
+  public CityOuterClass.ListCitiesResponse listCities() throws Exception {
+    CityOuterClass.ListCitiesResponse temp =
+        CityOuterClass.ListCitiesResponse.newBuilder()
+            .addAllCities(
+                cityService
+                    .listAll()
                     .stream()
-                    .map(NeighborhoodConverter::toProto)
+                    .map(CityConverter::toProto)
                     .collect(Collectors.toList()))
             .build();
-
-    System.out.println(temp);
     return temp;
   }
 
-  @RequestMapping(value = "/neighborhood/{id}", method = RequestMethod.GET)
+  @RequestMapping(value = "/v1/city/{id}", method = RequestMethod.GET)
   @ResponseStatus(value = HttpStatus.OK)
-  public NeighborhoodOuterClass.Neighborhood getNeighborhood(@PathVariable String id)
+  public CityOuterClass.City getCity(@PathVariable String id) throws Exception {
+    City city = cityService.getById(id).orElseThrow(ResourceNotFoundException::new);
+    return CityConverter.toProto(city);
+  }
+
+  @RequestMapping(value = "/v1/city/:info", method = RequestMethod.PATCH)
+  public CityOuterClass.City updateCityInfo(@RequestBody CityOuterClass.UpdateCityInfoRequest request)
       throws Exception {
-    Neighborhood neighborhood =
-        neighborhoodService
-            .getById(Integer.parseInt(id, 10))
-            .orElseThrow(ResourceNotFoundException::new);
-    System.out.println(neighborhood);
-    return NeighborhoodConverter.toProto(neighborhood);
+    City city = cityService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
+    city.setName(request.getInfo().getName());
+    return CityConverter.toProto(cityService.save(city));
+  }
+
+  @RequestMapping(value = "/v1/city:status", method = RequestMethod.PATCH)
+  public CityOuterClass.City updateCityStatus(@RequestBody CityOuterClass.UpdateCityStatusRequest request)
+      throws Exception {
+    City city = cityService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
+    city.setStatus(request.getStatus());
+    return CityConverter.toProto(cityService.save(city));
   }
 }

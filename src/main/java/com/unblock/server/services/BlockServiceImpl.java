@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,12 +21,17 @@ public class BlockServiceImpl implements BlockService {
   }
 
   @Override
-  public Block update(Block block) {
+  public Block save(Block block) {
     return blockRepository.save(block);
   }
 
   @Override
-  public Optional<Block> getById(int id) {
+  public Optional<Block> getById(String id) {
     return blockRepository.findById(id).stream().findFirst();
+  }
+
+  @Override
+  public List<Block> listByNeighborhood(String neighborhoodId) {
+    return blockRepository.findByNeighborhoodId(neighborhoodId);
   }
 }

@@ -1,6 +1,7 @@
 package com.unblock.server.controllers;
 
 import com.unblock.proto.AttractionOuterClass;
+import com.unblock.proto.AttractionOuterClass.AttractionStatus;
 import com.unblock.server.data.storage.Attraction;
 import com.unblock.server.data.storage.Block;
 import com.unblock.server.data.storage.Neighborhood;
@@ -18,18 +19,28 @@ public class AttractionController {
 
   @Autowired private AttractionService attractionService;
 
+  @RequestMapping(value = "/v1/attraction", method = RequestMethod.POST)
+  public AttractionOuterClass.Attraction createAttraction(
+      @RequestBody AttractionOuterClass.CreateAttractionRequest request) throws Exception {
+    Attraction newAttraction = new Attraction();
+    newAttraction.setBlock(new Block(request.getBlockId()));
+    newAttraction.setStatus(AttractionStatus.ATTRACTION_LIVE);
+    newAttraction.setName(request.getInfo().getName());
+    newAttraction.setX(request.getInfo().getLocation().getX());
+    newAttraction.setY(request.getInfo().getLocation().getY());
+    newAttraction.setDescription(request.getInfo().getDescription());
+    return AttractionConverter.toProto(attractionService.create(newAttraction));
+  }
+
   @RequestMapping(value = "attraction/info", method = RequestMethod.POST)
   public AttractionOuterClass.Attraction updateAttractionInfo(
       @RequestBody AttractionOuterClass.UpdateAttractionInfoRequest request) throws Exception {
 
     Attraction attraction =
-        attractionService
-            .getById(Integer.parseInt(request.getId()))
-            .orElseThrow(ResourceNotFoundException::new);
+        attractionService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
 
-    attraction.setTitle(request.getName());
-    attraction.setBlock(new Block(request.getBlockId()));
-    attraction.setNeighborhood(new Neighborhood(request.getNeighborhoodId()));
+    attraction.setName(request.getInfo().getName());
+    attraction.setDescription(request.getInfo().getDescription());
 
     attractionService.update(attraction);
 
@@ -41,31 +52,13 @@ public class AttractionController {
       @RequestBody AttractionOuterClass.UpdateAttractionLocationRequest request) throws Exception {
 
     Attraction attraction =
-        attractionService
-            .getById(Integer.parseInt(request.getId()))
-            .orElseThrow(ResourceNotFoundException::new);
+        attractionService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
 
-    attraction.setX(request.getX());
-    attraction.setY(request.getY());
+    attraction.setX(request.getLocation().getX());
+    attraction.setY(request.getLocation().getY());
 
     attractionService.update(attraction);
 
     return AttractionConverter.toProto(attraction);
-  }
-
-  @RequestMapping(value = "attraction", method = RequestMethod.POST)
-  public AttractionOuterClass.Attraction createAttraction(
-      @RequestBody AttractionOuterClass.CreateAttractionRequest request) throws Exception {
-
-    Attraction newAttraction = new Attraction();
-    newAttraction.setNeighborhood(new Neighborhood(request.getNeighborhoodId()));
-    newAttraction.setBlock(new Block(request.getBlockId()));
-    newAttraction.setX(request.getX());
-    newAttraction.setY(request.getY());
-    newAttraction.setTitle(request.getName());
-
-    attractionService.create(newAttraction);
-
-    return AttractionConverter.toProto(newAttraction);
   }
 }

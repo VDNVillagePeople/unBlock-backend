@@ -1,6 +1,7 @@
 package com.unblock.server.data.storage;
 
 import com.unblock.proto.CityOuterClass.CityStatus;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -11,8 +12,9 @@ import java.util.Set;
 public class City {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  private String id;
 
   @Enumerated(EnumType.STRING)
   private CityStatus status;
@@ -28,11 +30,11 @@ public class City {
 
   public City() {}
 
-  public int getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(String id) {
     this.id = id;
   }
 

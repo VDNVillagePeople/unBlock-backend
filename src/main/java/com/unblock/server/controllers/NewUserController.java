@@ -1,6 +1,6 @@
 package com.unblock.server.controllers;
 
-import com.unblock.proto.NewUserRequest;
+import com.unblock.proto.NewUser.NewUserRequest;
 import com.unblock.server.data.storage.User;
 import com.unblock.server.exception.EmailAlreadyExistsException;
 import com.unblock.server.exception.UsernameAlreadyExistsException;

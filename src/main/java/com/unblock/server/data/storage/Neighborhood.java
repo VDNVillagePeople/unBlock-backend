@@ -1,6 +1,7 @@
 package com.unblock.server.data.storage;
 
 import com.unblock.proto.NeighborhoodOuterClass.NeighborhoodStatus;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,8 +11,9 @@ import java.util.Set;
 public class Neighborhood {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  private String id;
 
   @Enumerated(EnumType.STRING)
   private NeighborhoodStatus status;
@@ -31,11 +33,15 @@ public class Neighborhood {
 
   public Neighborhood() {}
 
-  public int getId() {
+  public Neighborhood(String id) {
+    this.setId(id);
+  }
+
+  public String getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(String id) {
     this.id = id;
   }
 

@@ -27,7 +27,7 @@ public class AttractionServiceImpl implements AttractionService {
   }
 
   @Override
-  public Optional<Attraction> getById(int id) {
+  public Optional<Attraction> getById(String id) {
     return attractionRepository.findById(id).stream().findFirst();
   }
 }

@@ -14,5 +14,5 @@ public interface AttractionService {
 
   Attraction update(Attraction request);
 
-  Optional<Attraction> getById(int id);
+  Optional<Attraction> getById(String id);
 }
