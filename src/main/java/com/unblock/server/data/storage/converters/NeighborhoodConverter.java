@@ -10,8 +10,8 @@ public class NeighborhoodConverter {
   public static NeighborhoodOuterClass.Neighborhood toProto(Neighborhood neighborhood) {
     return NeighborhoodOuterClass.Neighborhood.newBuilder()
         .setId(Integer.toString(neighborhood.getId()))
-        .setName(neighborhood.getTitle())
-        .setImage(neighborhood.getImage())
+        .setStatus(neighborhood.getStatus())
+        .setName(neighborhood.getName())
         .addAllBlocks(
             neighborhood
                 .getBlocks()
