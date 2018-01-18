@@ -21,7 +21,7 @@ public class NewUserController {
 
   @Autowired private PasswordManager passwordManager;
 
-  @RequestMapping(value = "/newUser", method = RequestMethod.POST)
+  @RequestMapping(value = "/v1/newUser", method = RequestMethod.POST)
   @ResponseStatus(value = HttpStatus.OK)
   public void newUser(@RequestBody NewUserRequest newUserRequest, HttpServletResponse response)
       throws Exception {

@@ -4,6 +4,7 @@ import com.unblock.proto.NeighborhoodOuterClass.NeighborhoodStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -29,7 +30,7 @@ public class Neighborhood {
     cascade = {CascadeType.ALL},
     orphanRemoval = true
   )
-  private Set<Block> blocks;
+  private Set<Block> blocks = new HashSet();
 
   public Neighborhood() {}
 
@@ -74,6 +75,7 @@ public class Neighborhood {
   }
 
   public void setBlocks(Set<Block> blocks) {
-    this.blocks = blocks;
+    this.blocks.clear();
+    this.blocks.addAll(blocks);
   }
 }

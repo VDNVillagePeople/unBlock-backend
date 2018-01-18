@@ -30,7 +30,12 @@ public class BlockController {
   @RequestMapping(value = "/v1/block", method = RequestMethod.POST)
   public BlockOuterClass.Block createBlock(@RequestBody BlockOuterClass.CreateBlockRequest request)
       throws Exception {
+    Neighborhood neighborhood =
+        neighborhoodService
+            .getById(request.getNeighborhoodId())
+            .orElseThrow(ResourceNotFoundException::new);
     Block newBlock = new Block();
+    newBlock.setNeighborhood(neighborhood);
     setPoints(newBlock, request.getInfo().getBounds());
     newBlock.setName(request.getInfo().getName());
     newBlock.setStatus(BlockStatus.BLOCK_LIVE);
@@ -38,29 +43,32 @@ public class BlockController {
     return BlockConverter.toProto(blockService.create(newBlock));
   }
 
-  @RequestMapping(value = "/v1/neighborhood/{neighborhoodId}/blocks/", method = RequestMethod.GET)
+  @RequestMapping(value = "/v1/neighborhood/{neighborhoodId}/blocks", method = RequestMethod.GET)
   @ResponseStatus(value = HttpStatus.OK)
   public BlockOuterClass.ListBlocksResponse listBlocksByNeighborhood(
       @PathVariable String neighborhoodId) throws Exception {
-    BlockOuterClass.ListBlocksResponse temp =
-        BlockOuterClass.ListBlocksResponse.newBuilder()
-            .addAllBlocks(
-                blockService
-                    .listByNeighborhood(neighborhoodId)
-                    .stream()
-                    .map(BlockConverter::toProto)
-                    .collect(Collectors.toList()))
-            .build();
-    return temp;
+    return BlockOuterClass.ListBlocksResponse.newBuilder()
+        .addAllBlocks(
+            blockService
+                .listByNeighborhood(neighborhoodId)
+                .stream()
+                .map(BlockConverter::toProto)
+                .collect(Collectors.toList()))
+        .build();
+  }
+
+  @RequestMapping(value = "/v1/block/{id}", method = RequestMethod.GET)
+  @ResponseStatus(value = HttpStatus.OK)
+  public BlockOuterClass.Block getBlock(@PathVariable String id) throws Exception {
+    Block block = blockService.getById(id).orElseThrow(ResourceNotFoundException::new);
+    return BlockConverter.toProto(block);
   }
 
   @RequestMapping(value = "/v1/block:info", method = RequestMethod.PATCH)
   public BlockOuterClass.Block updateBlockInfo(
       @RequestBody BlockOuterClass.UpdateBlockInfoRequest request) throws Exception {
     Block block = blockService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
-
     block.setName(request.getInfo().getName());
-
     return BlockConverter.toProto(blockService.save(block));
   }
 
@@ -69,15 +77,18 @@ public class BlockController {
       @RequestBody BlockOuterClass.UpdateBlockBoundsRequest request) throws Exception {
     Block block = blockService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     setPoints(block, request.getUpdate().getBounds());
+    System.out.println(request.getUpdate().getBounds());
     return BlockConverter.toProto(blockService.save(block));
   }
 
-  @RequestMapping(value = "/v1/block:assign", method = RequestMethod.POST)
+  @RequestMapping(value = "/v1/block:assign", method = RequestMethod.PATCH)
   public BlockOuterClass.Block assignBlockToNeighborhood(
       @RequestBody BlockOuterClass.AssignBlockToNeighborhoodRequest request) throws Exception {
     Block block = blockService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     Neighborhood neighborhood =
-        neighborhoodService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
+        neighborhoodService
+            .getById(request.getNeighborhoodId())
+            .orElseThrow(ResourceNotFoundException::new);
     block.setNeighborhood(neighborhood);
     return BlockConverter.toProto(blockService.save(block));
   }
@@ -85,15 +96,12 @@ public class BlockController {
   private Block setPoints(Block block, Bounds bounds) {
     List<Point> points =
         bounds.getPointsList().stream().map(PointConverter::toJava).collect(Collectors.toList());
-
-    Block newBlock = new Block();
     int index = 0;
     for (Point point : points) {
-      point.setBlock(newBlock);
+      point.setBlock(block);
       point.setOrderIndex(index++);
     }
-
-    newBlock.setPoints(points);
-    return newBlock;
+    block.setPoints(points);
+    return block;
   }
 }

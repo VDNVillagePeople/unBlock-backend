@@ -28,8 +28,7 @@ public class CityController {
   @RequestMapping(value = "/v1/cities", method = RequestMethod.GET)
   @ResponseStatus(value = HttpStatus.OK)
   public CityOuterClass.ListCitiesResponse listCities() throws Exception {
-    CityOuterClass.ListCitiesResponse temp =
-        CityOuterClass.ListCitiesResponse.newBuilder()
+    return CityOuterClass.ListCitiesResponse.newBuilder()
             .addAllCities(
                 cityService
                     .listAll()
@@ -37,7 +36,6 @@ public class CityController {
                     .map(CityConverter::toProto)
                     .collect(Collectors.toList()))
             .build();
-    return temp;
   }
 
   @RequestMapping(value = "/v1/city/{id}", method = RequestMethod.GET)
@@ -47,17 +45,17 @@ public class CityController {
     return CityConverter.toProto(city);
   }
 
-  @RequestMapping(value = "/v1/city/:info", method = RequestMethod.PATCH)
-  public CityOuterClass.City updateCityInfo(@RequestBody CityOuterClass.UpdateCityInfoRequest request)
-      throws Exception {
+  @RequestMapping(value = "/v1/city:info", method = RequestMethod.PATCH)
+  public CityOuterClass.City updateCityInfo(
+      @RequestBody CityOuterClass.UpdateCityInfoRequest request) throws Exception {
     City city = cityService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     city.setName(request.getInfo().getName());
     return CityConverter.toProto(cityService.save(city));
   }
 
   @RequestMapping(value = "/v1/city:status", method = RequestMethod.PATCH)
-  public CityOuterClass.City updateCityStatus(@RequestBody CityOuterClass.UpdateCityStatusRequest request)
-      throws Exception {
+  public CityOuterClass.City updateCityStatus(
+      @RequestBody CityOuterClass.UpdateCityStatusRequest request) throws Exception {
     City city = cityService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     city.setStatus(request.getStatus());
     return CityConverter.toProto(cityService.save(city));

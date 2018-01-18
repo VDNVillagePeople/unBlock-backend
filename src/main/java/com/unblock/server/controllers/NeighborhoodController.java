@@ -24,19 +24,21 @@ public class NeighborhoodController {
 
   @RequestMapping(value = "/v1/neighborhood", method = RequestMethod.POST)
   public NeighborhoodOuterClass.Neighborhood createNeighborHood(
-      @RequestBody NeighborhoodOuterClass.CreateNeighborhoodRequest request) {
+      @RequestBody NeighborhoodOuterClass.CreateNeighborhoodRequest request) throws Exception {
+    City city =
+        cityService.getById(request.getCityId()).orElseThrow(ResourceNotFoundException::new);
     Neighborhood neighborhood = new Neighborhood();
+    neighborhood.setCity(city);
     neighborhood.setName(request.getInfo().getName());
     neighborhood.setStatus(NeighborhoodOuterClass.NeighborhoodStatus.NEIGHBORHOOD_LIVE);
     return NeighborhoodConverter.toProto(neighborhoodService.create(neighborhood));
   }
 
-  @RequestMapping(value = "/v1/city/{cityId}/neighborhoods/", method = RequestMethod.GET)
+  @RequestMapping(value = "/v1/city/{cityId}/neighborhoods", method = RequestMethod.GET)
   @ResponseStatus(value = HttpStatus.OK)
   public NeighborhoodOuterClass.ListNeighborhoodsResponse listNeighborhoodsByCity(
       @PathVariable String cityId) throws Exception {
-    NeighborhoodOuterClass.ListNeighborhoodsResponse temp =
-        NeighborhoodOuterClass.ListNeighborhoodsResponse.newBuilder()
+    return NeighborhoodOuterClass.ListNeighborhoodsResponse.newBuilder()
             .addAllNeighborhoods(
                 neighborhoodService
                     .listByCity(cityId)
@@ -44,7 +46,19 @@ public class NeighborhoodController {
                     .map(NeighborhoodConverter::toProto)
                     .collect(Collectors.toList()))
             .build();
-    return temp;
+  }
+
+  @RequestMapping(value = "/v1/neighborhoods", method = RequestMethod.GET)
+  @ResponseStatus(value = HttpStatus.OK)
+  public NeighborhoodOuterClass.ListNeighborhoodsResponse listAllNeighborhood() throws Exception {
+    return NeighborhoodOuterClass.ListNeighborhoodsResponse.newBuilder()
+            .addAllNeighborhoods(
+                neighborhoodService
+                    .listAll()
+                    .stream()
+                    .map(NeighborhoodConverter::toProto)
+                    .collect(Collectors.toList()))
+            .build();
   }
 
   @RequestMapping(value = "/v1/neighborhood/{id}", method = RequestMethod.GET)
@@ -75,7 +89,7 @@ public class NeighborhoodController {
     return NeighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
   }
 
-  @RequestMapping(value = "/v1/neighborhood:assign", method = RequestMethod.POST)
+  @RequestMapping(value = "/v1/neighborhood:assign", method = RequestMethod.PATCH)
   public NeighborhoodOuterClass.Neighborhood assignNeighborhoodToCity(
       @RequestBody NeighborhoodOuterClass.AssignNeighborhoodToCityRequest request)
       throws Exception {

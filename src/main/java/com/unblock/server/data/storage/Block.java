@@ -4,6 +4,8 @@ import com.unblock.proto.BlockOuterClass.BlockStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,13 +32,13 @@ public class Block {
     cascade = {CascadeType.ALL},
     orphanRemoval = true
   )
-  private List<Point> points;
+  private List<Point> points = new ArrayList();
 
   @OneToMany(
-    mappedBy = "attraction",
+    mappedBy = "block",
     cascade = {CascadeType.ALL}
   )
-  private Set<Attraction> attractions;
+  private Set<Attraction> attractions = new HashSet();
 
   public Block() {}
 
@@ -81,7 +83,8 @@ public class Block {
   }
 
   public void setPoints(List<Point> points) {
-    this.points = points;
+    this.points.clear();
+    this.points.addAll(points);
   }
 
   public Set<Attraction> getAttractions() {
@@ -89,6 +92,7 @@ public class Block {
   }
 
   public void setAttractions(Set<Attraction> attractions) {
-    this.attractions = attractions;
+    this.attractions.clear();
+    this.attractions.addAll(attractions);
   }
 }

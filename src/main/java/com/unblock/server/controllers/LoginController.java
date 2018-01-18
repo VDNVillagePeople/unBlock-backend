@@ -21,7 +21,7 @@ public class LoginController {
 
   @Autowired private PasswordManager passwordManager;
 
-  @RequestMapping(value = "/login", method = RequestMethod.POST)
+  @RequestMapping(value = "/v1/login", method = RequestMethod.POST)
   public void login(@RequestBody LoginRequest loginRequest, HttpServletResponse response)
       throws LoginFailedException {
     System.out.println("Request");

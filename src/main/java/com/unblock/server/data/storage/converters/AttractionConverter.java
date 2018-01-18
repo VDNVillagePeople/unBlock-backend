@@ -10,6 +10,7 @@ public class AttractionConverter {
     return AttractionOuterClass.Attraction.newBuilder()
         .setId(attraction.getId())
         .setStatus(attraction.getStatus())
+        .setDescription(attraction.getDescription())
         .setBlockId(attraction.getBlock().getId())
         .setName(attraction.getName())
         .setLocation(

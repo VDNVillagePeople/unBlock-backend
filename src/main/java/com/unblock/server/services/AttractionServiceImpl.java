@@ -22,7 +22,7 @@ public class AttractionServiceImpl implements AttractionService {
   }
 
   @Override
-  public Attraction update(Attraction block) {
+  public Attraction save(Attraction block) {
     return attractionRepository.save(block);
   }
 

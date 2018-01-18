@@ -37,6 +37,9 @@ public class NeighborhoodServiceImpl implements NeighborhoodService {
   }
 
   @Override
+  public List<Neighborhood> listAll() { return neighborhoodRepository.findAll(); }
+
+  @Override
   public List<Neighborhood> listByCity(String cityId) {
     return neighborhoodRepository.findByCityId(cityId);
   }
