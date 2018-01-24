@@ -57,11 +57,10 @@ public class AttractionController {
 
   @RequestMapping(value = "/v1/attraction:status", method = RequestMethod.PATCH)
   public AttractionOuterClass.Attraction updateAttractionStatus(
-      @RequestBody AttractionOuterClass.UpdateAttractionLocationRequest request) throws Exception {
+      @RequestBody AttractionOuterClass.UpdateAttractionStatusRequest request) throws Exception {
     Attraction attraction =
         attractionService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
-    attraction.setX(request.getLocation().getX());
-    attraction.setY(request.getLocation().getY());
+    attraction.setStatus(request.getStatus());
     return AttractionConverter.toProto(attractionService.save(attraction));
   }
 
@@ -70,7 +69,7 @@ public class AttractionController {
       @RequestBody AttractionOuterClass.AssignAttractionToBlockRequest request) throws Exception {
     Attraction attraction =
         attractionService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
-    Block block = blockService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
+    Block block = blockService.getById(request.getBlockId()).orElseThrow(ResourceNotFoundException::new);
     attraction.setBlock(block);
     return AttractionConverter.toProto(attractionService.save(attraction));
   }
