@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,8 +16,18 @@ public class UserServiceImpl implements UserService {
   @Autowired private UserRepository userRepository;
 
   @Override
-  public void create(User user) {
-    userRepository.save(user);
+  public User create(User user) {
+    return userRepository.save(user);
+  }
+
+  @Override
+  public User save(User request) {
+    return userRepository.save(request);
+  }
+  
+  @Override
+  public Optional<User> getById(String id) {
+    return userRepository.findById(id).stream().findFirst();
   }
 
   @Override
@@ -27,5 +38,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public Optional<User> getByEmail(String email) {
     return userRepository.findByEmail(email).stream().findFirst();
+  }
+
+  @Override
+  public List<User> listAll() {
+    return userRepository.findAll();
   }
 }
