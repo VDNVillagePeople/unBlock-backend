@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
-  
+
   @Autowired private UserService userService;
 
   @Autowired private PasswordManager passwordManager;
@@ -47,7 +47,7 @@ public class UserController {
     return UserConverter.toProto(user);
   }
 
-  @RequestMapping(value = "/v1/cities", method = RequestMethod.GET)
+  @RequestMapping(value = "/v1/users", method = RequestMethod.GET)
   @ResponseStatus(value = HttpStatus.OK)
   public UserOuterClass.ListUsersResponse listUsers() throws Exception {
     return UserOuterClass.ListUsersResponse.newBuilder()
