@@ -19,6 +19,8 @@ public class User {
 
   private String email;
 
+  private String level;
+
   public String getId() {
     return id;
   }
@@ -51,6 +53,14 @@ public class User {
     this.email = email;
   }
 
+  public String getLevel() {
+    return level;
+  }
+
+  public void setLevel(String level) {
+    this.level = level;
+  }
+
   @Override
   public String toString() {
     return "User{"
@@ -64,6 +74,9 @@ public class User {
         + '\''
         + ", email='"
         + email
+        + '\''
+        + ", level='"
+        + level
         + '\''
         + '}';
   }

@@ -66,6 +66,7 @@ public class UserController {
     User user = userService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     user.setUsername(request.getInfo().getUsername());
     user.setEmail(request.getInfo().getEmail());
+    user.setLevel(request.getInfo().getLevel().name());
     return UserConverter.toProto(userService.save(user));
   }
 
