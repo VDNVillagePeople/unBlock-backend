@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface AttractionService {
   Attraction create(Attraction request);
 
-  Attraction update(Attraction request);
+  Attraction save(Attraction request);
 
-  Optional<Attraction> getById(int id);
+  Optional<Attraction> getById(String id);
 }

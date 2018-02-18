@@ -1,6 +1,6 @@
 package com.unblock.server.controllers;
 
-import com.unblock.proto.LoginRequest;
+import com.unblock.proto.Login.LoginRequest;
 import com.unblock.server.data.storage.User;
 import com.unblock.server.exception.LoginFailedException;
 import com.unblock.server.security.TokenAuthenticationService;
@@ -21,7 +21,7 @@ public class LoginController {
 
   @Autowired private PasswordManager passwordManager;
 
-  @RequestMapping(value = "/login", method = RequestMethod.POST)
+  @RequestMapping(value = "/v1/login", method = RequestMethod.POST)
   public void login(@RequestBody LoginRequest loginRequest, HttpServletResponse response)
       throws LoginFailedException {
     System.out.println("Request");

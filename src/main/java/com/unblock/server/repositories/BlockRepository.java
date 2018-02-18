@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface BlockRepository extends JpaRepository<Block, Integer> {
-  List<Block> findById(int id);
+public interface BlockRepository extends JpaRepository<Block, String> {
+  List<Block> findById(String id);
+
+  List<Block> findByNeighborhoodId(String id);
 }

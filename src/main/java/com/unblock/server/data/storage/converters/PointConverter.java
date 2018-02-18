@@ -1,6 +1,6 @@
 package com.unblock.server.data.storage.converters;
 
-import com.unblock.proto.BlockOuterClass.Bounds;
+import com.unblock.proto.BoundsOuterClass.Bounds;
 import com.unblock.server.data.storage.Point;
 
 public class PointConverter {

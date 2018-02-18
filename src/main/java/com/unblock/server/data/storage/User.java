@@ -1,5 +1,7 @@
 package com.unblock.server.data.storage;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,8 +9,9 @@ import javax.persistence.*;
 public class User {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  private String id;
 
   private String username;
 
@@ -16,11 +19,13 @@ public class User {
 
   private String email;
 
-  public int getId() {
+  private String level;
+
+  public String getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -48,6 +53,14 @@ public class User {
     this.email = email;
   }
 
+  public String getLevel() {
+    return level;
+  }
+
+  public void setLevel(String level) {
+    this.level = level;
+  }
+
   @Override
   public String toString() {
     return "User{"
@@ -61,6 +74,9 @@ public class User {
         + '\''
         + ", email='"
         + email
+        + '\''
+        + ", level='"
+        + level
         + '\''
         + '}';
   }

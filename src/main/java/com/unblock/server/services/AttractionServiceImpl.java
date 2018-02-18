@@ -22,12 +22,12 @@ public class AttractionServiceImpl implements AttractionService {
   }
 
   @Override
-  public Attraction update(Attraction block) {
+  public Attraction save(Attraction block) {
     return attractionRepository.save(block);
   }
 
   @Override
-  public Optional<Attraction> getById(int id) {
+  public Optional<Attraction> getById(String id) {
     return attractionRepository.findById(id).stream().findFirst();
   }
 }

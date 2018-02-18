@@ -14,7 +14,9 @@ public interface NeighborhoodService {
 
   Neighborhood save(Neighborhood request);
 
-  Optional<Neighborhood> getById(int id);
+  Optional<Neighborhood> getById(String id);
 
-  List<Neighborhood> getAll();
+  List<Neighborhood> listAll();
+
+  List<Neighborhood> listByCity(String cityId);
 }

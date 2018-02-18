@@ -1,7 +1,7 @@
 package com.unblock.server.data.storage.converters;
 
 import com.unblock.proto.BlockOuterClass;
-import com.unblock.proto.BlockOuterClass.Bounds;
+import com.unblock.proto.BoundsOuterClass;
 import com.unblock.server.data.storage.Block;
 import com.unblock.server.data.storage.Point;
 
@@ -12,10 +12,12 @@ public class BlockConverter {
 
   public static BlockOuterClass.Block toProto(Block block) {
     return BlockOuterClass.Block.newBuilder()
-        .setId(Integer.toString(block.getId()))
-        .setName(block.getTitle())
+        .setId(block.getId())
+        .setStatus(block.getStatus())
+        .setNeighborhoodId(block.getNeighborhood().getId())
+        .setName(block.getName())
         .setBounds(
-            Bounds.newBuilder()
+            BoundsOuterClass.Bounds.newBuilder()
                 .addAllPoints(
                     block
                         .getPoints()
