@@ -16,5 +16,7 @@ public interface BlockService {
 
   Optional<Block> getById(String id);
 
+  List<Block> listAll();
+
   List<Block> listByNeighborhood(String neighborhoodId);
 }

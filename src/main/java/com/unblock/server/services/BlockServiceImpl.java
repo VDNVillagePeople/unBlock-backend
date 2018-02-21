@@ -31,6 +31,9 @@ public class BlockServiceImpl implements BlockService {
   }
 
   @Override
+  public List<Block> listAll() { return blockRepository.findAll(); }
+
+  @Override
   public List<Block> listByNeighborhood(String neighborhoodId) {
     return blockRepository.findByNeighborhoodId(neighborhoodId);
   }

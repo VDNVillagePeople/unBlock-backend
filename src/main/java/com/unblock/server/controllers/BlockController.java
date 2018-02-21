@@ -43,6 +43,19 @@ public class BlockController {
     return BlockConverter.toProto(blockService.create(newBlock));
   }
 
+  @RequestMapping(value = "/v1/blocks", method = RequestMethod.GET)
+  @ResponseStatus(value = HttpStatus.OK)
+  public BlockOuterClass.ListBlocksResponse listAllBlocks() throws Exception {
+    return BlockOuterClass.ListBlocksResponse.newBuilder()
+        .addAllBlocks(
+            blockService
+                .listAll()
+                .stream()
+                .map(BlockConverter::toProto)
+                .collect(Collectors.toList()))
+        .build();
+  }
+
   @RequestMapping(value = "/v1/neighborhood/{neighborhoodId}/blocks", method = RequestMethod.GET)
   @ResponseStatus(value = HttpStatus.OK)
   public BlockOuterClass.ListBlocksResponse listBlocksByNeighborhood(

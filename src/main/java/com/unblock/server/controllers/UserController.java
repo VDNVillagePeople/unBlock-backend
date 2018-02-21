@@ -1,9 +1,7 @@
 package com.unblock.server.controllers;
 
-import com.unblock.proto.NewUser.NewUserRequest;
 import com.unblock.proto.UserOuterClass;
 import com.unblock.proto.UserOuterClass.CreateUserRequest;
-import com.unblock.server.data.storage.Neighborhood;
 import com.unblock.server.data.storage.User;
 import com.unblock.server.data.storage.converters.UserConverter;
 import com.unblock.server.exception.EmailAlreadyExistsException;
@@ -98,6 +96,7 @@ public class UserController {
     user.setEmail(createUserRequest.getInfo().getEmail());
     user.setPassword(
         passwordManager.getEncryptedPassword(createUserRequest.getInfo().getPassword()));
+    user.setLevel(createUserRequest.getInfo().getLevel().name());
     return userService.create(user);
   }
 }

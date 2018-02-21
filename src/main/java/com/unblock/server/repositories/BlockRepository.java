@@ -9,4 +9,6 @@ public interface BlockRepository extends JpaRepository<Block, String> {
   List<Block> findById(String id);
 
   List<Block> findByNeighborhoodId(String id);
+
+  List<Block> findAll();
 }
