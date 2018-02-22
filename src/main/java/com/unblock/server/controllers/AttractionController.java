@@ -10,10 +10,9 @@ import com.unblock.server.exception.ResourceNotFoundException;
 import com.unblock.server.services.AttractionService;
 import com.unblock.server.services.BlockService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RestController
 public class AttractionController {
@@ -33,6 +32,31 @@ public class AttractionController {
     newAttraction.setY(request.getInfo().getLocation().getY());
     newAttraction.setDescription(request.getInfo().getDescription());
     return AttractionConverter.toProto(attractionService.create(newAttraction));
+  }
+
+  @RequestMapping(value = "/v1/attractions", method = RequestMethod.GET)
+  public AttractionOuterClass.ListAttractionsResponse listAllAttractions() throws Exception {
+    return AttractionOuterClass.ListAttractionsResponse.newBuilder()
+        .addAllBlocks(
+            attractionService
+                .listAll()
+                .stream()
+                .map(AttractionConverter::toProto)
+                .collect(Collectors.toList()))
+        .build();
+  }
+
+  @RequestMapping(value = "/v1/block/{blockId}/attractions", method = RequestMethod.GET)
+  public AttractionOuterClass.ListAttractionsResponse listAttractionsByBlock(
+      @PathVariable String blockId) throws Exception {
+    return AttractionOuterClass.ListAttractionsResponse.newBuilder()
+        .addAllBlocks(
+            attractionService
+                .listByBlock(blockId)
+                .stream()
+                .map(AttractionConverter::toProto)
+                .collect(Collectors.toList()))
+        .build();
   }
 
   @RequestMapping(value = "/v1/attraction:info", method = RequestMethod.PATCH)

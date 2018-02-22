@@ -5,6 +5,7 @@ import com.unblock.server.data.storage.Block;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,4 +16,8 @@ public interface AttractionService {
   Attraction save(Attraction request);
 
   Optional<Attraction> getById(String id);
+
+  List<Attraction> listAll();
+
+  List<Attraction> listByBlock(String blockId);
 }

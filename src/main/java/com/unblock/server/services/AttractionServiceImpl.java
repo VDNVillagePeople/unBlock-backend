@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,5 +30,13 @@ public class AttractionServiceImpl implements AttractionService {
   @Override
   public Optional<Attraction> getById(String id) {
     return attractionRepository.findById(id).stream().findFirst();
+  }
+
+  @Override
+  public List<Attraction> listAll() { return attractionRepository.findAll(); }
+
+  @Override
+  public List<Attraction> listByBlock(String blockId) {
+    return attractionRepository.findByBlockId(blockId);
   }
 }
