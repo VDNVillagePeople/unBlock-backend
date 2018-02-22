@@ -37,7 +37,7 @@ public class AttractionController {
   @RequestMapping(value = "/v1/attractions", method = RequestMethod.GET)
   public AttractionOuterClass.ListAttractionsResponse listAllAttractions() throws Exception {
     return AttractionOuterClass.ListAttractionsResponse.newBuilder()
-        .addAllBlocks(
+        .addAllAttractions(
             attractionService
                 .listAll()
                 .stream()
@@ -50,7 +50,7 @@ public class AttractionController {
   public AttractionOuterClass.ListAttractionsResponse listAttractionsByBlock(
       @PathVariable String blockId) throws Exception {
     return AttractionOuterClass.ListAttractionsResponse.newBuilder()
-        .addAllBlocks(
+        .addAllAttractions(
             attractionService
                 .listByBlock(blockId)
                 .stream()

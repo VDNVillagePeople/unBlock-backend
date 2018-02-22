@@ -12,4 +12,3 @@ public interface AttractionRepository extends JpaRepository<Attraction, String> 
 
   List<Attraction> findAll();
 }
-
