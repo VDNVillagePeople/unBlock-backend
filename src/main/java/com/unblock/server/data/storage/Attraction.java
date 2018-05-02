@@ -26,7 +26,10 @@ public class Attraction {
   private String description;
 
   private float x;
+
   private float y;
+
+  private String googlePlaceId;
 
   public Attraction() {}
 
@@ -88,5 +91,13 @@ public class Attraction {
 
   public void setY(float y) {
     this.y = y;
+  }
+
+  public String getGooglePlaceId() {
+    return googlePlaceId;
+  }
+
+  public void setGooglePlaceId(String googlePlaceId) {
+    this.googlePlaceId = googlePlaceId;
   }
 }

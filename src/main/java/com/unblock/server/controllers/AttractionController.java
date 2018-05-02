@@ -10,6 +10,7 @@ import com.unblock.server.exception.ResourceNotFoundException;
 import com.unblock.server.services.AttractionService;
 import com.unblock.server.services.BlockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
@@ -31,7 +32,15 @@ public class AttractionController {
     newAttraction.setX(request.getInfo().getLocation().getX());
     newAttraction.setY(request.getInfo().getLocation().getY());
     newAttraction.setDescription(request.getInfo().getDescription());
+    newAttraction.setGooglePlaceId(request.getInfo().getGooglePlaceId());
     return AttractionConverter.toProto(attractionService.create(newAttraction));
+  }
+
+  @RequestMapping(value = "/v1/attraction/{id}", method = RequestMethod.GET)
+  @ResponseStatus(value = HttpStatus.OK)
+  public AttractionOuterClass.Attraction getAttraction(@PathVariable String id) throws Exception {
+    Attraction attraction = attractionService.getById(id).orElseThrow(ResourceNotFoundException::new);
+    return AttractionConverter.toProto(attraction);
   }
 
   @RequestMapping(value = "/v1/attractions", method = RequestMethod.GET)

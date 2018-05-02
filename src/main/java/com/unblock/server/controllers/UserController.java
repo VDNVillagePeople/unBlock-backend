@@ -64,7 +64,7 @@ public class UserController {
     User user = userService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     user.setUsername(request.getInfo().getUsername());
     user.setEmail(request.getInfo().getEmail());
-    user.setLevel(request.getInfo().getLevel().name());
+    user.setLevel(request.getInfo().getLevel());
     return UserConverter.toProto(userService.save(user));
   }
 
@@ -96,7 +96,7 @@ public class UserController {
     user.setEmail(createUserRequest.getInfo().getEmail());
     user.setPassword(
         passwordManager.getEncryptedPassword(createUserRequest.getInfo().getPassword()));
-    user.setLevel(createUserRequest.getInfo().getLevel().name());
+    user.setLevel(createUserRequest.getInfo().getLevel());
     return userService.create(user);
   }
 }

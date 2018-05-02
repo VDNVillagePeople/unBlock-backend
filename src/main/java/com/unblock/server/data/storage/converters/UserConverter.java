@@ -12,6 +12,7 @@ public class UserConverter {
         .setId(user.getId())
         .setUsername(user.getUsername())
         .setEmail(user.getEmail())
+        .setLevel(user.getLevel())
         .build();
   }
 }

@@ -15,6 +15,7 @@ public class AttractionConverter {
         .setName(attraction.getName())
         .setLocation(
             AttractionLocation.newBuilder().setX(attraction.getX()).setY(attraction.getY()))
+        .setGooglePlaceId(attraction.getGooglePlaceId())
         .build();
   }
 }

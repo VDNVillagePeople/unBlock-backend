@@ -85,6 +85,16 @@ public class BlockController {
     return BlockConverter.toProto(blockService.save(block));
   }
 
+  @RequestMapping(value = "/v1/block:status", method = RequestMethod.PATCH)
+  public BlockOuterClass.Block updateBlockStatus(
+      @RequestBody BlockOuterClass.UpdateBlockStatusRequest request)
+      throws Exception {
+    Block block =
+        blockService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
+    block.setStatus(request.getStatus());
+    return BlockConverter.toProto(blockService.save(block));
+  }
+
   @RequestMapping(value = "/v1/block:bounds", method = RequestMethod.PATCH)
   public BlockOuterClass.Block updateBlockBounds(
       @RequestBody BlockOuterClass.UpdateBlockBoundsRequest request) throws Exception {

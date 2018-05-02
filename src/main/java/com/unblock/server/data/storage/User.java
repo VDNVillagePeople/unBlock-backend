@@ -1,5 +1,6 @@
 package com.unblock.server.data.storage;
 
+import com.unblock.proto.UserOuterClass.UserLevel;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -19,7 +20,8 @@ public class User {
 
   private String email;
 
-  private String level;
+  @Enumerated(EnumType.STRING)
+  private UserLevel level;
 
   public String getId() {
     return id;
@@ -53,11 +55,11 @@ public class User {
     this.email = email;
   }
 
-  public String getLevel() {
+  public UserLevel getLevel() {
     return level;
   }
 
-  public void setLevel(String level) {
+  public void setLevel(UserLevel level) {
     this.level = level;
   }
 

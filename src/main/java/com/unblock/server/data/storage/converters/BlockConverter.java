@@ -25,6 +25,12 @@ public class BlockConverter {
                         .sorted(Comparator.comparingInt(Point::getOrderIndex))
                         .map(PointConverter::toProto)
                         .collect(Collectors.toList())))
+        .addAllAttractions(
+            block
+                .getAttractions()
+                .stream()
+                .map(AttractionConverter::toProto)
+                .collect(Collectors.toList()))
         .build();
   }
 }
