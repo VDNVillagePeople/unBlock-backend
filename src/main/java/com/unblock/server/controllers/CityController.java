@@ -21,6 +21,7 @@ public class CityController {
   public CityOuterClass.City createCity(@RequestBody CityOuterClass.CreateCityRequest request) {
     City city = new City();
     city.setName(request.getInfo().getName());
+    city.setImageFilename(request.getInfo().getImageFilename());
     city.setStatus(CityStatus.CITY_LIVE);
     return CityConverter.toProto(cityService.create(city));
   }
@@ -50,6 +51,7 @@ public class CityController {
       @RequestBody CityOuterClass.UpdateCityInfoRequest request) throws Exception {
     City city = cityService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     city.setName(request.getInfo().getName());
+    city.setImageFilename(request.getInfo().getImageFilename());
     return CityConverter.toProto(cityService.save(city));
   }
 

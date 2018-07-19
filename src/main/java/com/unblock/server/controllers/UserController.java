@@ -11,7 +11,9 @@ import com.unblock.server.security.TokenAuthenticationService;
 import com.unblock.server.security.password.PasswordManager;
 import com.unblock.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,14 +29,18 @@ public class UserController {
 
   @RequestMapping(value = "/v1/user", method = RequestMethod.POST)
   @ResponseStatus(value = HttpStatus.OK)
-  public void createUser(
+  public ResponseEntity<UserOuterClass.User> createUser(
       @RequestBody CreateUserRequest createUserRequest, HttpServletResponse response)
       throws Exception {
     verifyUsernameUniqueness(createUserRequest.getInfo().getUsername());
     verifyEmailUniqueness(createUserRequest.getInfo().getEmail());
 
     User user = createUser(createUserRequest);
-    TokenAuthenticationService.addAuthentication(response, user.getId());
+    HttpHeaders responseHeaders = new HttpHeaders();
+    TokenAuthenticationService.addAuthentication(responseHeaders, user.getUsername());
+
+    return new ResponseEntity<UserOuterClass.User>(
+        UserConverter.toProto(user), responseHeaders, HttpStatus.OK);
   }
 
   @RequestMapping(value = "/v1/user/{userId}", method = RequestMethod.GET)

@@ -12,6 +12,7 @@ public class CityConverter {
         .setId(city.getId())
         .setStatus(city.getStatus())
         .setName(city.getName())
+        .setImageFilename(city.getImageFilename())
         .addAllNeighborhoods(
             city
                 .getNeighborhoods()

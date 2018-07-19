@@ -2,6 +2,7 @@ package com.unblock.server.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security
         .authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,13 +21,13 @@ public class TokenAuthenticationService {
     static final String TOKEN_PREFIX = "Bearer";
     static final String HEADER_STRING = "Authorization";
 
-    public static void addAuthentication(HttpServletResponse res, String id) {
+    public static void addAuthentication(HttpHeaders headers, String id) {
         String JWT = Jwts.builder()
                 .setSubject(id)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
-        res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT);
+        headers.add(HEADER_STRING, TOKEN_PREFIX + " " + JWT);
     }
 
     public static Authentication getAuthentication(HttpServletRequest request) {

@@ -22,6 +22,8 @@ public class City {
 
   private String name;
 
+  private String imageFilename;
+
   @OneToMany(
     mappedBy = "city",
     cascade = {CascadeType.ALL},
@@ -53,6 +55,14 @@ public class City {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getImageFilename() {
+    return imageFilename;
+  }
+
+  public void setImageFilename(String imageFilename) {
+    this.imageFilename = imageFilename;
   }
 
   public Set<Neighborhood> getNeighborhoods() {
