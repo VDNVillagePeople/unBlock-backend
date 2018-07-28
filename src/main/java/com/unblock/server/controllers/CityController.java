@@ -1,15 +1,20 @@
 package com.unblock.server.controllers;
 
+import com.unblock.proto.BoundsOuterClass.Bounds;
 import com.unblock.proto.CityOuterClass;
 import com.unblock.proto.CityOuterClass.CityStatus;
+import com.unblock.server.data.storage.Block;
 import com.unblock.server.data.storage.City;
+import com.unblock.server.data.storage.Point;
 import com.unblock.server.data.storage.converters.CityConverter;
+import com.unblock.server.data.storage.converters.PointConverter;
 import com.unblock.server.exception.ResourceNotFoundException;
 import com.unblock.server.services.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -55,11 +60,30 @@ public class CityController {
     return CityConverter.toProto(cityService.save(city));
   }
 
-  @RequestMapping(value = "/v1/city:status", method = RequestMethod.PATCH)
-  public CityOuterClass.City updateCityStatus(
-      @RequestBody CityOuterClass.UpdateCityStatusRequest request) throws Exception {
+  @RequestMapping(value = "/v1/city:center", method = RequestMethod.PATCH)
+  public CityOuterClass.City updateCityCenter(
+      @RequestBody CityOuterClass.UpdateCityCenterRequest request) throws Exception {
     City city = cityService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
-    city.setStatus(request.getStatus());
+    city.setX(request.getCenter().getX());
+    city.setY(request.getCenter().getY());
     return CityConverter.toProto(cityService.save(city));
+  }
+  @RequestMapping(value = "/v1/city:bounds", method = RequestMethod.PATCH)
+  public CityOuterClass.City updateCityBounds(
+      @RequestBody CityOuterClass.UpdateCityBoundsRequest request) throws Exception {
+    City city = cityService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
+    setBounds(city, request.getBounds());
+    return CityConverter.toProto(cityService.save(city));
+  }
+
+  private void setBounds(City city, Bounds bounds) {
+    List<Point> points =
+        bounds.getPointsList().stream().map(PointConverter::toJava).collect(Collectors.toList());
+    int index = 0;
+    for (Point point : points) {
+      point.setCity(city);
+      point.setOrderIndex(index++);
+    }
+    city.setBounds(points);
   }
 }

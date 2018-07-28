@@ -4,8 +4,9 @@ import com.unblock.proto.CityOuterClass.CityStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,6 +31,17 @@ public class City {
     orphanRemoval = true
   )
   private Set<Neighborhood> neighborhoods = new HashSet();
+
+  private float x;
+
+  private float y;
+
+  @OneToMany(
+      mappedBy = "city",
+      cascade = {CascadeType.ALL},
+      orphanRemoval = true
+  )
+  private List<Point> bounds = new ArrayList();
 
   public City() {}
 
@@ -58,7 +70,7 @@ public class City {
   }
 
   public String getImageFilename() {
-    return imageFilename == null ? "" : imageFilename;
+    return imageFilename;
   }
 
   public void setImageFilename(String imageFilename) {
@@ -72,5 +84,30 @@ public class City {
   public void setNeighborhoods(Set<Neighborhood> neighborhoods) {
     this.neighborhoods.clear();
     this.neighborhoods.addAll(neighborhoods);
+  }
+
+  public float getX() {
+    return x;
+  }
+
+  public void setX(float x) {
+    this.x = x;
+  }
+
+  public float getY() {
+    return y;
+  }
+
+  public void setY(float y) {
+    this.y = y;
+  }
+
+  public List<Point> getBounds() {
+    return bounds;
+  }
+
+  public void setBounds(List<Point> bounds) {
+    this.bounds.clear();
+    this.bounds.addAll(bounds);
   }
 }

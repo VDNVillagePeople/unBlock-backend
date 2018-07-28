@@ -1,7 +1,7 @@
 package com.unblock.server.data.storage.converters;
 
 import com.unblock.proto.AttractionOuterClass;
-import com.unblock.proto.AttractionOuterClass.AttractionLocation;
+import com.unblock.proto.PointOuterClass.Point;
 import com.unblock.server.data.storage.Attraction;
 
 public class AttractionConverter {
@@ -13,9 +13,8 @@ public class AttractionConverter {
         .setDescription(attraction.getDescription())
         .setBlockId(attraction.getBlock().getId())
         .setName(attraction.getName())
-        .setLocation(
-            AttractionLocation.newBuilder().setX(attraction.getX()).setY(attraction.getY()))
-        .setGooglePlaceId(attraction.getGooglePlaceId())
+        .setLocation(Point.newBuilder().setX(attraction.getX()).setY(attraction.getY()))
+        .setGooglePlaceId(attraction.getGooglePlaceId() == null ? "" : attraction.getGooglePlaceId())
         .build();
   }
 }

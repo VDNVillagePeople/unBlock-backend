@@ -100,7 +100,6 @@ public class BlockController {
       @RequestBody BlockOuterClass.UpdateBlockBoundsRequest request) throws Exception {
     Block block = blockService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     setPoints(block, request.getUpdate().getBounds());
-    System.out.println(request.getUpdate().getBounds());
     return BlockConverter.toProto(blockService.save(block));
   }
 

@@ -21,6 +21,10 @@ public class Point {
   @JoinColumn(name = "block_id")
   private Block block;
 
+  @ManyToOne
+  @JoinColumn(name = "city_id")
+  private City city;
+
   public Point() {}
 
   public Point(float x, float y) {
@@ -66,5 +70,13 @@ public class Point {
 
   public void setBlock(Block block) {
     this.block = block;
+  }
+
+  public City getCity() {
+    return city;
+  }
+
+  public void setCity(City city) {
+    this.city = city;
   }
 }
