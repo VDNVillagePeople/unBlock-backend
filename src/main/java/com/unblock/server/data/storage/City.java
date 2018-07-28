@@ -22,7 +22,7 @@ public class City {
 
   private String name;
 
-  private String imageFilename;
+  private String imageFilename = "";
 
   @OneToMany(
     mappedBy = "city",
@@ -58,7 +58,7 @@ public class City {
   }
 
   public String getImageFilename() {
-    return imageFilename;
+    return imageFilename == null ? "" : imageFilename;
   }
 
   public void setImageFilename(String imageFilename) {

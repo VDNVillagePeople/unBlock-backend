@@ -94,7 +94,7 @@ public class Attraction {
   }
 
   public String getGooglePlaceId() {
-    return googlePlaceId;
+    return googlePlaceId != null ? googlePlaceId : "";
   }
 
   public void setGooglePlaceId(String googlePlaceId) {
