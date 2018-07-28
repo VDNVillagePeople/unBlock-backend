@@ -2,9 +2,11 @@ package com.unblock.server.data.storage.converters;
 
 import com.unblock.proto.BoundsOuterClass.Bounds;
 import com.unblock.proto.CityOuterClass;
-import com.unblock.proto.PointOuterClass.Point;
+import com.unblock.proto.PointOuterClass;
 import com.unblock.server.data.storage.City;
+import com.unblock.server.data.storage.Point;
 
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class CityConverter {
@@ -20,12 +22,13 @@ public class CityConverter {
                 .stream()
                 .map(NeighborhoodConverter::toProto)
                 .collect(Collectors.toList()))
-        .setCenter(Point.newBuilder().setX(city.getX()).setY(city.getY()))
+        .setCenter(PointOuterClass.Point.newBuilder().setX(city.getX()).setY(city.getY()))
         .setBounds(
             Bounds.newBuilder()
                 .addAllPoints(
                     city.getBounds()
                         .stream()
+                        .sorted(Comparator.comparingInt(Point::getOrderIndex))
                         .map(PointConverter::toProto)
                         .collect(Collectors.toList())))
         .build();
