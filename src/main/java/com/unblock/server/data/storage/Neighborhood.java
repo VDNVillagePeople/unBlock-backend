@@ -4,7 +4,9 @@ import com.unblock.proto.NeighborhoodOuterClass.NeighborhoodStatus;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,6 +33,13 @@ public class Neighborhood {
     orphanRemoval = true
   )
   private Set<Block> blocks = new HashSet();
+
+  @OneToMany(
+      mappedBy = "neighborhood",
+      cascade = {CascadeType.ALL},
+      orphanRemoval = true
+  )
+  private List<Point> bounds = new ArrayList();
 
   public Neighborhood() {}
 
@@ -77,5 +86,14 @@ public class Neighborhood {
   public void setBlocks(Set<Block> blocks) {
     this.blocks.clear();
     this.blocks.addAll(blocks);
+  }
+
+  public List<Point> getBounds() {
+    return bounds;
+  }
+
+  public void setBounds(List<Point> bounds) {
+    this.bounds.clear();
+    this.bounds.addAll(bounds);
   }
 }

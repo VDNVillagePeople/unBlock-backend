@@ -1,12 +1,17 @@
 package com.unblock.server.controllers;
 
+import com.unblock.proto.BoundsOuterClass;
+import com.unblock.proto.CityOuterClass;
 import com.unblock.proto.NeighborhoodOuterClass;
 import com.unblock.proto.NeighborhoodOuterClass;
 import com.unblock.server.data.storage.City;
 import com.unblock.server.data.storage.Neighborhood;
 import com.unblock.server.data.storage.Neighborhood;
+import com.unblock.server.data.storage.Point;
+import com.unblock.server.data.storage.converters.CityConverter;
 import com.unblock.server.data.storage.converters.NeighborhoodConverter;
 import com.unblock.server.data.storage.converters.NeighborhoodConverter;
+import com.unblock.server.data.storage.converters.PointConverter;
 import com.unblock.server.exception.ResourceNotFoundException;
 import com.unblock.server.services.CityService;
 import com.unblock.server.services.NeighborhoodService;
@@ -14,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -99,5 +105,24 @@ public class NeighborhoodController {
         cityService.getById(request.getCityId()).orElseThrow(ResourceNotFoundException::new);
     neighborhood.setCity(city);
     return NeighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
+  }
+
+  @RequestMapping(value = "/v1/neighborhood:bounds", method = RequestMethod.PATCH)
+  public NeighborhoodOuterClass.Neighborhood updateNeighborhoodBounds(
+      @RequestBody NeighborhoodOuterClass.UpdateNeighborhoodBoundsRequest request) throws Exception {
+    Neighborhood neighborhood = neighborhoodService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
+    setBounds(neighborhood, request.getUpdate().getBounds());
+    return NeighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
+  }
+
+  private void setBounds(Neighborhood neighborhood, BoundsOuterClass.Bounds bounds) {
+    List<Point> points =
+        bounds.getPointsList().stream().map(PointConverter::toJava).collect(Collectors.toList());
+    int index = 0;
+    for (Point point : points) {
+      point.setNeighborhood(neighborhood);
+      point.setOrderIndex(index++);
+    }
+    neighborhood.setBounds(points);
   }
 }

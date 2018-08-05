@@ -68,6 +68,7 @@ public class CityController {
     city.setY(request.getCenter().getY());
     return CityConverter.toProto(cityService.save(city));
   }
+
   @RequestMapping(value = "/v1/city:bounds", method = RequestMethod.PATCH)
   public CityOuterClass.City updateCityBounds(
       @RequestBody CityOuterClass.UpdateCityBoundsRequest request) throws Exception {
