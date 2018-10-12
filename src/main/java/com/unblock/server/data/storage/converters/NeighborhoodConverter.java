@@ -4,13 +4,19 @@ import com.unblock.proto.BoundsOuterClass;
 import com.unblock.proto.NeighborhoodOuterClass;
 import com.unblock.server.data.storage.Neighborhood;
 import com.unblock.server.data.storage.Point;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+@Component
 public class NeighborhoodConverter {
 
-  public static NeighborhoodOuterClass.Neighborhood toProto(Neighborhood neighborhood) {
+  @Autowired
+  private BlockConverter blockConverter;
+
+  public NeighborhoodOuterClass.Neighborhood toProto(Neighborhood neighborhood) {
     return NeighborhoodOuterClass.Neighborhood.newBuilder()
         .setId(neighborhood.getId())
         .setStatus(neighborhood.getStatus())
@@ -20,7 +26,7 @@ public class NeighborhoodConverter {
             neighborhood
                 .getBlocks()
                 .stream()
-                .map(BlockConverter::toProto)
+                .map(block -> blockConverter.toProto(block))
                 .collect(Collectors.toList()))
         .setBounds(
             BoundsOuterClass.Bounds.newBuilder()

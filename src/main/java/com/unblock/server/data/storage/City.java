@@ -1,6 +1,8 @@
 package com.unblock.server.data.storage;
 
 import com.unblock.proto.CityOuterClass.CityStatus;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -30,6 +32,7 @@ public class City {
     cascade = {CascadeType.ALL},
     orphanRemoval = true
   )
+  @Fetch(FetchMode.JOIN)
   private Set<Neighborhood> neighborhoods = new HashSet();
 
   private float x;
@@ -41,7 +44,8 @@ public class City {
       cascade = {CascadeType.ALL},
       orphanRemoval = true
   )
-  private List<Point> bounds = new ArrayList();
+  @Fetch(FetchMode.JOIN)
+  private Set<Point> bounds = new HashSet();
 
   public City() {}
 
@@ -102,7 +106,7 @@ public class City {
     this.y = y;
   }
 
-  public List<Point> getBounds() {
+  public Set<Point> getBounds() {
     return bounds;
   }
 

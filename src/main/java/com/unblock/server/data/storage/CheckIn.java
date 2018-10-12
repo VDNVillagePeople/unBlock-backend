@@ -1,6 +1,8 @@
 package com.unblock.server.data.storage;
 
 import com.unblock.proto.AttractionOuterClass.AttractionStatus;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -15,10 +17,12 @@ public class CheckIn {
   private String id;
 
   @ManyToOne
+  @Fetch(FetchMode.JOIN)
   @JoinColumn(name = "attraction_id")
   private Attraction attraction;
 
   @ManyToOne
+  @Fetch(FetchMode.JOIN)
   @JoinColumn(name = "user_id")
   private User user;
 

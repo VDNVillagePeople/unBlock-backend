@@ -1,6 +1,8 @@
 package com.unblock.server.data.storage;
 
 import com.unblock.proto.AttractionOuterClass.AttractionStatus;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,6 +20,7 @@ public class Attraction {
   private AttractionStatus status;
 
   @ManyToOne
+  @Fetch(FetchMode.JOIN)
   @JoinColumn(name = "block_id")
   private Block block;
 

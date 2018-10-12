@@ -1,10 +1,11 @@
 package com.unblock.server.data.storage;
 
 import com.unblock.proto.BlockOuterClass.BlockStatus;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,22 +23,27 @@ public class Block {
   private BlockStatus status;
 
   @ManyToOne
+  @Fetch(FetchMode.JOIN)
   @JoinColumn(name = "neighborhood_id")
   private Neighborhood neighborhood;
 
   private String name;
 
   @OneToMany(
+    fetch = FetchType.EAGER,
     mappedBy = "block",
     cascade = {CascadeType.ALL},
     orphanRemoval = true
   )
-  private List<Point> points = new ArrayList();
+  @Fetch(FetchMode.JOIN)
+  private Set<Point> points = new HashSet();
 
   @OneToMany(
+    fetch = FetchType.EAGER,
     mappedBy = "block",
     cascade = {CascadeType.ALL}
   )
+  @Fetch(FetchMode.JOIN)
   private Set<Attraction> attractions = new HashSet();
 
   public Block() {}
@@ -78,7 +84,7 @@ public class Block {
     this.name = name;
   }
 
-  public List<Point> getPoints() {
+  public Set<Point> getPoints() {
     return points;
   }
 

@@ -5,13 +5,19 @@ import com.unblock.proto.CityOuterClass;
 import com.unblock.proto.PointOuterClass;
 import com.unblock.server.data.storage.City;
 import com.unblock.server.data.storage.Point;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+@Component
 public class CityConverter {
 
-  public static CityOuterClass.City toProto(City city) {
+  @Autowired
+  private NeighborhoodConverter neighborhoodConverter;
+
+  public CityOuterClass.City toProto(City city) {
     return CityOuterClass.City.newBuilder()
         .setId(city.getId())
         .setStatus(city.getStatus())
@@ -20,7 +26,7 @@ public class CityConverter {
         .addAllNeighborhoods(
             city.getNeighborhoods()
                 .stream()
-                .map(NeighborhoodConverter::toProto)
+                .map(neighborhood -> neighborhoodConverter.toProto(neighborhood))
                 .collect(Collectors.toList()))
         .setCenter(PointOuterClass.Point.newBuilder().setX(city.getX()).setY(city.getY()))
         .setBounds(

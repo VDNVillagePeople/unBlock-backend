@@ -4,13 +4,19 @@ import com.unblock.proto.BlockOuterClass;
 import com.unblock.proto.BoundsOuterClass;
 import com.unblock.server.data.storage.Block;
 import com.unblock.server.data.storage.Point;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+@Component
 public class BlockConverter {
 
-  public static BlockOuterClass.Block toProto(Block block) {
+  @Autowired
+  private AttractionConverter attractionConverter;
+
+  public BlockOuterClass.Block toProto(Block block) {
     return BlockOuterClass.Block.newBuilder()
         .setId(block.getId())
         .setStatus(block.getStatus())
@@ -29,7 +35,7 @@ public class BlockConverter {
             block
                 .getAttractions()
                 .stream()
-                .map(AttractionConverter::toProto)
+                .map(attraction -> attractionConverter.toProto(attraction))
                 .collect(Collectors.toList()))
         .build();
   }

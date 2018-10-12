@@ -7,6 +7,7 @@ import com.unblock.server.data.storage.Block;
 import com.unblock.server.data.storage.City;
 import com.unblock.server.data.storage.Point;
 import com.unblock.server.data.storage.converters.CityConverter;
+import com.unblock.server.data.storage.converters.NeighborhoodConverter;
 import com.unblock.server.data.storage.converters.PointConverter;
 import com.unblock.server.exception.ResourceNotFoundException;
 import com.unblock.server.services.CityService;
@@ -22,13 +23,15 @@ public class CityController {
 
   @Autowired private CityService cityService;
 
+  @Autowired private CityConverter cityConverter;
+
   @RequestMapping(value = "/v1/city", method = RequestMethod.POST)
   public CityOuterClass.City createCity(@RequestBody CityOuterClass.CreateCityRequest request) {
     City city = new City();
     city.setName(request.getInfo().getName());
     city.setImageFilename(request.getInfo().getImageFilename());
     city.setStatus(CityStatus.CITY_LIVE);
-    return CityConverter.toProto(cityService.create(city));
+    return cityConverter.toProto(cityService.create(city));
   }
 
   @RequestMapping(value = "/v1/cities", method = RequestMethod.GET)
@@ -39,7 +42,7 @@ public class CityController {
                 cityService
                     .listAll()
                     .stream()
-                    .map(CityConverter::toProto)
+                    .map(cityConverter::toProto)
                     .collect(Collectors.toList()))
             .build();
   }
@@ -48,7 +51,7 @@ public class CityController {
   @ResponseStatus(value = HttpStatus.OK)
   public CityOuterClass.City getCity(@PathVariable String id) throws Exception {
     City city = cityService.getById(id).orElseThrow(ResourceNotFoundException::new);
-    return CityConverter.toProto(city);
+    return cityConverter.toProto(city);
   }
 
   @RequestMapping(value = "/v1/city:info", method = RequestMethod.PATCH)
@@ -57,7 +60,7 @@ public class CityController {
     City city = cityService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     city.setName(request.getInfo().getName());
     city.setImageFilename(request.getInfo().getImageFilename());
-    return CityConverter.toProto(cityService.save(city));
+    return cityConverter.toProto(cityService.save(city));
   }
 
   @RequestMapping(value = "/v1/city:center", method = RequestMethod.PATCH)
@@ -66,7 +69,7 @@ public class CityController {
     City city = cityService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     city.setX(request.getCenter().getX());
     city.setY(request.getCenter().getY());
-    return CityConverter.toProto(cityService.save(city));
+    return cityConverter.toProto(cityService.save(city));
   }
 
   @RequestMapping(value = "/v1/city:bounds", method = RequestMethod.PATCH)
@@ -74,7 +77,7 @@ public class CityController {
       @RequestBody CityOuterClass.UpdateCityBoundsRequest request) throws Exception {
     City city = cityService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     setBounds(city, request.getBounds());
-    return CityConverter.toProto(cityService.save(city));
+    return cityConverter.toProto(cityService.save(city));
   }
 
   private void setBounds(City city, Bounds bounds) {

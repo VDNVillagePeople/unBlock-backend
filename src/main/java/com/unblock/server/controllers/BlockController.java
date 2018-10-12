@@ -8,6 +8,7 @@ import com.unblock.server.data.storage.Block;
 import com.unblock.server.data.storage.City;
 import com.unblock.server.data.storage.Neighborhood;
 import com.unblock.server.data.storage.Point;
+import com.unblock.server.data.storage.converters.AttractionConverter;
 import com.unblock.server.data.storage.converters.BlockConverter;
 import com.unblock.server.data.storage.converters.NeighborhoodConverter;
 import com.unblock.server.data.storage.converters.PointConverter;
@@ -27,6 +28,8 @@ public class BlockController {
   @Autowired private BlockService blockService;
   @Autowired private NeighborhoodService neighborhoodService;
 
+  @Autowired private BlockConverter blockConverter;
+
   @RequestMapping(value = "/v1/block", method = RequestMethod.POST)
   public BlockOuterClass.Block createBlock(@RequestBody BlockOuterClass.CreateBlockRequest request)
       throws Exception {
@@ -40,7 +43,7 @@ public class BlockController {
     newBlock.setName(request.getInfo().getName());
     newBlock.setStatus(BlockStatus.BLOCK_LIVE);
     newBlock.setNeighborhood(new Neighborhood(request.getNeighborhoodId()));
-    return BlockConverter.toProto(blockService.create(newBlock));
+    return blockConverter.toProto(blockService.create(newBlock));
   }
 
   @RequestMapping(value = "/v1/blocks", method = RequestMethod.GET)
@@ -51,7 +54,7 @@ public class BlockController {
             blockService
                 .listAll()
                 .stream()
-                .map(BlockConverter::toProto)
+                .map(blockConverter::toProto)
                 .collect(Collectors.toList()))
         .build();
   }
@@ -65,7 +68,7 @@ public class BlockController {
             blockService
                 .listByNeighborhood(neighborhoodId)
                 .stream()
-                .map(BlockConverter::toProto)
+                .map(blockConverter::toProto)
                 .collect(Collectors.toList()))
         .build();
   }
@@ -74,7 +77,7 @@ public class BlockController {
   @ResponseStatus(value = HttpStatus.OK)
   public BlockOuterClass.Block getBlock(@PathVariable String id) throws Exception {
     Block block = blockService.getById(id).orElseThrow(ResourceNotFoundException::new);
-    return BlockConverter.toProto(block);
+    return blockConverter.toProto(block);
   }
 
   @RequestMapping(value = "/v1/block:info", method = RequestMethod.PATCH)
@@ -82,7 +85,7 @@ public class BlockController {
       @RequestBody BlockOuterClass.UpdateBlockInfoRequest request) throws Exception {
     Block block = blockService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     block.setName(request.getInfo().getName());
-    return BlockConverter.toProto(blockService.save(block));
+    return blockConverter.toProto(blockService.save(block));
   }
 
   @RequestMapping(value = "/v1/block:status", method = RequestMethod.PATCH)
@@ -92,7 +95,7 @@ public class BlockController {
     Block block =
         blockService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     block.setStatus(request.getStatus());
-    return BlockConverter.toProto(blockService.save(block));
+    return blockConverter.toProto(blockService.save(block));
   }
 
   @RequestMapping(value = "/v1/block:bounds", method = RequestMethod.PATCH)
@@ -100,7 +103,7 @@ public class BlockController {
       @RequestBody BlockOuterClass.UpdateBlockBoundsRequest request) throws Exception {
     Block block = blockService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     setPoints(block, request.getUpdate().getBounds());
-    return BlockConverter.toProto(blockService.save(block));
+    return blockConverter.toProto(blockService.save(block));
   }
 
   @RequestMapping(value = "/v1/block:assign", method = RequestMethod.PATCH)
@@ -112,7 +115,7 @@ public class BlockController {
             .getById(request.getNeighborhoodId())
             .orElseThrow(ResourceNotFoundException::new);
     block.setNeighborhood(neighborhood);
-    return BlockConverter.toProto(blockService.save(block));
+    return blockConverter.toProto(blockService.save(block));
   }
 
   private Block setPoints(Block block, Bounds bounds) {

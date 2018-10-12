@@ -22,13 +22,20 @@ public class FirebaseAuthenticationFilter extends GenericFilterBean {
       throws IOException, ServletException {
     String idToken = ((HttpServletRequest) request).getHeader(HEADER_STRING);
 
+    if (idToken == null || idToken.trim().isEmpty()) {
+      throw new SecurityException("Must provide an authentication token.");
+    }
     try {
+      System.out.println("Doing authentication");
+      System.out.println(idToken);
       FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
       String uid = decodedToken.getUid();
+      System.out.println(uid);
 
       SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(uid, decodedToken));
       filterChain.doFilter(request, response);
     } catch (FirebaseAuthException e) {
+      System.out.println(e);
       throw new SecurityException(e);
     }
   }

@@ -26,3 +26,5 @@ nbdist/
 .mvn/
 mvnw
 mvnw.cmd
+
+src/main/resources/firebase_service_account_credentials.json

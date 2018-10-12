@@ -7,8 +7,6 @@ import com.unblock.server.data.storage.converters.UserConverter;
 import com.unblock.server.exception.EmailAlreadyExistsException;
 import com.unblock.server.exception.ResourceNotFoundException;
 import com.unblock.server.exception.UsernameAlreadyExistsException;
-import com.unblock.server.security.TokenAuthenticationService;
-import com.unblock.server.security.password.PasswordManager;
 import com.unblock.server.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -25,8 +23,6 @@ public class UserController {
 
   @Autowired private UserService userService;
 
-  @Autowired private PasswordManager passwordManager;
-
   @RequestMapping(value = "/v1/user", method = RequestMethod.POST)
   @ResponseStatus(value = HttpStatus.OK)
   public ResponseEntity<UserOuterClass.User> createUser(
@@ -37,7 +33,6 @@ public class UserController {
 
     User user = createUser(createUserRequest);
     HttpHeaders responseHeaders = new HttpHeaders();
-    TokenAuthenticationService.addAuthentication(responseHeaders, user.getUsername());
 
     return new ResponseEntity<UserOuterClass.User>(
         UserConverter.toProto(user), responseHeaders, HttpStatus.OK);
@@ -78,7 +73,6 @@ public class UserController {
   public UserOuterClass.User updateUserPassword(
       @RequestBody UserOuterClass.UpdateUserPasswordRequest request) throws Exception {
     User user = userService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
-    user.setPassword(passwordManager.getEncryptedPassword(request.getInfo().getPassword()));
     return UserConverter.toProto(userService.save(user));
   }
 
@@ -100,8 +94,6 @@ public class UserController {
     User user = new User();
     user.setUsername(createUserRequest.getInfo().getUsername());
     user.setEmail(createUserRequest.getInfo().getEmail());
-    user.setPassword(
-        passwordManager.getEncryptedPassword(createUserRequest.getInfo().getPassword()));
     user.setLevel(createUserRequest.getInfo().getLevel());
     return userService.create(user);
   }

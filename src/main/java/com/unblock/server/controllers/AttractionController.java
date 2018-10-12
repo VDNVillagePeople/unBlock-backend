@@ -28,6 +28,8 @@ public class AttractionController {
   @Autowired private BlockService blockService;
   @Autowired private GooglePlacesService googlePlacesService;
 
+  @Autowired private AttractionConverter attractionConverter;
+
   @RequestMapping(value = "/v1/attraction", method = RequestMethod.POST)
   public AttractionOuterClass.Attraction createAttraction(
       @RequestBody AttractionOuterClass.CreateAttractionRequest request) throws Exception {
@@ -40,7 +42,7 @@ public class AttractionController {
     newAttraction.setX(request.getInfo().getLocation().getX());
     newAttraction.setY(request.getInfo().getLocation().getY());
     newAttraction.setDescription(request.getInfo().getDescription());
-    return AttractionConverter.toProto(attractionService.create(newAttraction));
+    return attractionConverter.toProto(attractionService.create(newAttraction));
   }
 
   @RequestMapping(value = "/v1/adminattraction", method = RequestMethod.POST)
@@ -52,7 +54,7 @@ public class AttractionController {
     newAttraction.setBlock(block);
     newAttraction.setGooglePlaceId(request.getInfo().getGooglePlaceId());
     newAttraction.setStatus(AttractionStatus.ATTRACTION_DISABLED);
-    return AttractionConverter.toProto(attractionService.create(newAttraction));
+    return attractionConverter.toProto(attractionService.create(newAttraction));
   }
 
   @RequestMapping(value = "/v1/attraction/{id}", method = RequestMethod.GET)
@@ -60,18 +62,26 @@ public class AttractionController {
   public AttractionOuterClass.Attraction getAttraction(@PathVariable String id) throws Exception {
     Attraction attraction =
         attractionService.getById(id).orElseThrow(ResourceNotFoundException::new);
-    return AttractionConverter.toProto(attraction);
+    return attractionConverter.toProto(attraction);
+  }
+
+  @RequestMapping(value = "/v1/adminattraction/{id}", method = RequestMethod.GET)
+  @ResponseStatus(value = HttpStatus.OK)
+  public AttractionOuterClass.AdminAttraction getAdminAttraction(@PathVariable String id)
+      throws Exception {
+    Attraction attraction =
+        attractionService.getById(id).orElseThrow(ResourceNotFoundException::new);
+
+    return getAdminAttraction(attraction);
   }
 
   @RequestMapping(value = "/v1/attractions", method = RequestMethod.GET)
   public AttractionOuterClass.ListAttractionsResponse listAllAttractions() throws Exception {
     return AttractionOuterClass.ListAttractionsResponse.newBuilder()
-        .addAllAttractions(
-            attractionService
-                .listAll()
-                .stream()
-                .map(AttractionConverter::toProto)
-                .collect(Collectors.toList()))
+        .addAllAttractions(attractionService.listAll()
+            .stream()
+            .map(attractionConverter::toProto)
+            .collect(Collectors.toList()))
         .build();
   }
 
@@ -90,7 +100,7 @@ public class AttractionController {
 
   private AdminAttraction getAdminAttraction(Attraction attraction) throws Exception {
     AdminAttraction.Builder adminAttraction =
-        AdminAttraction.newBuilder().setAttraction(AttractionConverter.toProto(attraction));
+        AdminAttraction.newBuilder().setAttraction(attractionConverter.toProto(attraction));
     if (!attraction.getGooglePlaceId().trim().isEmpty()) {
       PlaceDetails placeDetails =
           googlePlacesService.getPlaceDetails(attraction.getGooglePlaceId());
@@ -103,9 +113,9 @@ public class AttractionController {
                   PointOuterClass.Point.newBuilder()
                       .setX((float) placeDetails.geometry.location.lat)
                       .setY((float) placeDetails.geometry.location.lng))
-            .setPhotoUrl(placeDetails.photos[0].photoReference)
-            .setGoogleUrl(placeDetails.url.toString())
-            .setWebsite(placeDetails.website.toString()));
+              .setPhotoUrl(placeDetails.photos[0].photoReference)
+              .setGoogleUrl(placeDetails.url.toString())
+              .setWebsite(placeDetails.website.toString()));
     }
     return adminAttraction.build();
   }
@@ -116,9 +126,9 @@ public class AttractionController {
     return AttractionOuterClass.ListAttractionsResponse.newBuilder()
         .addAllAttractions(
             attractionService
-                .listByBlock(blockId)
+                .listAll()
                 .stream()
-                .map(AttractionConverter::toProto)
+                .map(attractionConverter::toProto)
                 .collect(Collectors.toList()))
         .build();
   }
@@ -144,7 +154,7 @@ public class AttractionController {
         attractionService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     attraction.setName(request.getInfo().getName());
     attraction.setDescription(request.getInfo().getDescription());
-    return AttractionConverter.toProto(attractionService.save(attraction));
+    return attractionConverter.toProto(attractionService.save(attraction));
   }
 
   @RequestMapping(value = "/v1/attraction:location", method = RequestMethod.PATCH)
@@ -154,7 +164,7 @@ public class AttractionController {
         attractionService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     attraction.setX(request.getLocation().getX());
     attraction.setY(request.getLocation().getY());
-    return AttractionConverter.toProto(attractionService.save(attraction));
+    return attractionConverter.toProto(attractionService.save(attraction));
   }
 
   @RequestMapping(value = "/v1/attraction:status", method = RequestMethod.PATCH)
@@ -163,7 +173,7 @@ public class AttractionController {
     Attraction attraction =
         attractionService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     attraction.setStatus(request.getStatus());
-    return AttractionConverter.toProto(attractionService.save(attraction));
+    return attractionConverter.toProto(attractionService.save(attraction));
   }
 
   @RequestMapping(value = "/v1/attraction:assign", method = RequestMethod.PATCH)
@@ -174,6 +184,6 @@ public class AttractionController {
     Block block =
         blockService.getById(request.getBlockId()).orElseThrow(ResourceNotFoundException::new);
     attraction.setBlock(block);
-    return AttractionConverter.toProto(attractionService.save(attraction));
+    return attractionConverter.toProto(attractionService.save(attraction));
   }
 }

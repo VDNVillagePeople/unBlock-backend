@@ -1,10 +1,11 @@
 package com.unblock.server.data.storage;
 
 import com.unblock.proto.NeighborhoodOuterClass.NeighborhoodStatus;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,7 @@ public class Neighborhood {
   private NeighborhoodStatus status;
 
   @ManyToOne
+  @Fetch(FetchMode.JOIN)
   @JoinColumn(name = "city_id")
   private City city;
 
@@ -32,14 +34,16 @@ public class Neighborhood {
     cascade = {CascadeType.ALL},
     orphanRemoval = true
   )
+  @Fetch(FetchMode.JOIN)
   private Set<Block> blocks = new HashSet();
 
   @OneToMany(
-      mappedBy = "neighborhood",
-      cascade = {CascadeType.ALL},
-      orphanRemoval = true
+    mappedBy = "neighborhood",
+    cascade = {CascadeType.ALL},
+    orphanRemoval = true
   )
-  private List<Point> bounds = new ArrayList();
+  @Fetch(FetchMode.JOIN)
+  private Set<Point> bounds = new HashSet();
 
   public Neighborhood() {}
 
@@ -88,7 +92,7 @@ public class Neighborhood {
     this.blocks.addAll(blocks);
   }
 
-  public List<Point> getBounds() {
+  public Set<Point> getBounds() {
     return bounds;
   }
 

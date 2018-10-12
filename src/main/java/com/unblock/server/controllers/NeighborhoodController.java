@@ -8,10 +8,8 @@ import com.unblock.server.data.storage.City;
 import com.unblock.server.data.storage.Neighborhood;
 import com.unblock.server.data.storage.Neighborhood;
 import com.unblock.server.data.storage.Point;
-import com.unblock.server.data.storage.converters.CityConverter;
+import com.unblock.server.data.storage.converters.*;
 import com.unblock.server.data.storage.converters.NeighborhoodConverter;
-import com.unblock.server.data.storage.converters.NeighborhoodConverter;
-import com.unblock.server.data.storage.converters.PointConverter;
 import com.unblock.server.exception.ResourceNotFoundException;
 import com.unblock.server.services.CityService;
 import com.unblock.server.services.NeighborhoodService;
@@ -28,6 +26,8 @@ public class NeighborhoodController {
   @Autowired private NeighborhoodService neighborhoodService;
   @Autowired private CityService cityService;
 
+  @Autowired private NeighborhoodConverter neighborhoodConverter;
+
   @RequestMapping(value = "/v1/neighborhood", method = RequestMethod.POST)
   public NeighborhoodOuterClass.Neighborhood createNeighborHood(
       @RequestBody NeighborhoodOuterClass.CreateNeighborhoodRequest request) throws Exception {
@@ -37,7 +37,7 @@ public class NeighborhoodController {
     neighborhood.setCity(city);
     neighborhood.setName(request.getInfo().getName());
     neighborhood.setStatus(NeighborhoodOuterClass.NeighborhoodStatus.NEIGHBORHOOD_LIVE);
-    return NeighborhoodConverter.toProto(neighborhoodService.create(neighborhood));
+    return neighborhoodConverter.toProto(neighborhoodService.create(neighborhood));
   }
 
   @RequestMapping(value = "/v1/city/{cityId}/neighborhoods", method = RequestMethod.GET)
@@ -49,7 +49,7 @@ public class NeighborhoodController {
                 neighborhoodService
                     .listByCity(cityId)
                     .stream()
-                    .map(NeighborhoodConverter::toProto)
+                    .map(neighborhoodConverter::toProto)
                     .collect(Collectors.toList()))
             .build();
   }
@@ -62,7 +62,7 @@ public class NeighborhoodController {
                 neighborhoodService
                     .listAll()
                     .stream()
-                    .map(NeighborhoodConverter::toProto)
+                    .map(neighborhoodConverter::toProto)
                     .collect(Collectors.toList()))
             .build();
   }
@@ -73,7 +73,7 @@ public class NeighborhoodController {
       throws Exception {
     Neighborhood neighborhood =
         neighborhoodService.getById(id).orElseThrow(ResourceNotFoundException::new);
-    return NeighborhoodConverter.toProto(neighborhood);
+    return neighborhoodConverter.toProto(neighborhood);
   }
 
   @RequestMapping(value = "/v1/neighborhood:info", method = RequestMethod.PATCH)
@@ -82,7 +82,7 @@ public class NeighborhoodController {
     Neighborhood neighborhood =
         neighborhoodService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     neighborhood.setName(request.getInfo().getName());
-    return NeighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
+    return neighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
   }
 
   @RequestMapping(value = "/v1/neighborhood:status", method = RequestMethod.PATCH)
@@ -92,7 +92,7 @@ public class NeighborhoodController {
     Neighborhood neighborhood =
         neighborhoodService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     neighborhood.setStatus(request.getStatus());
-    return NeighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
+    return neighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
   }
 
   @RequestMapping(value = "/v1/neighborhood:assign", method = RequestMethod.PATCH)
@@ -104,7 +104,7 @@ public class NeighborhoodController {
     City city =
         cityService.getById(request.getCityId()).orElseThrow(ResourceNotFoundException::new);
     neighborhood.setCity(city);
-    return NeighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
+    return neighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
   }
 
   @RequestMapping(value = "/v1/neighborhood:bounds", method = RequestMethod.PATCH)
@@ -112,7 +112,7 @@ public class NeighborhoodController {
       @RequestBody NeighborhoodOuterClass.UpdateNeighborhoodBoundsRequest request) throws Exception {
     Neighborhood neighborhood = neighborhoodService.getById(request.getId()).orElseThrow(ResourceNotFoundException::new);
     setBounds(neighborhood, request.getUpdate().getBounds());
-    return NeighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
+    return neighborhoodConverter.toProto(neighborhoodService.save(neighborhood));
   }
 
   private void setBounds(Neighborhood neighborhood, BoundsOuterClass.Bounds bounds) {

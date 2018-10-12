@@ -1,5 +1,7 @@
 package com.unblock.server.data.storage;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,14 +20,17 @@ public class Point {
   private int orderIndex;
 
   @ManyToOne
+  @Fetch(FetchMode.JOIN)
   @JoinColumn(name = "block_id")
   private Block block;
 
   @ManyToOne
+  @Fetch(FetchMode.JOIN)
   @JoinColumn(name = "city_id")
   private City city;
 
   @ManyToOne
+  @Fetch(FetchMode.JOIN)
   @JoinColumn(name = "neighborhood_id")
   private Neighborhood neighborhood;
 
