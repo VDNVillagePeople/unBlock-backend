@@ -21,10 +21,9 @@ public class CheckIn {
   @JoinColumn(name = "attraction_id")
   private Attraction attraction;
 
-  @ManyToOne
-  @Fetch(FetchMode.JOIN)
-  @JoinColumn(name = "user_id")
-  private User user;
+  private String userId;
+
+  private long createdTime;
 
   public CheckIn() {}
 
@@ -48,11 +47,19 @@ public class CheckIn {
     this.attraction = attraction;
   }
 
-  public User getUser() {
-    return user;
+  public String getUserId() {
+    return userId;
   }
 
-  public void setUser(User user) {
-    this.user = user;
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  public long getCreatedTime() {
+    return createdTime;
+  }
+
+  public void setCreatedTime(long createdTime) {
+    this.createdTime = createdTime;
   }
 }

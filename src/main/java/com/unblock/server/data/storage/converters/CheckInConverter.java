@@ -7,8 +7,9 @@ public class CheckInConverter {
 
   public static CheckInOuterClass.CheckIn toProto(CheckIn checkIn) {
     return CheckInOuterClass.CheckIn.newBuilder()
+        .setCheckinId(checkIn.getId())
         .setAttractionId(checkIn.getAttraction().getId())
-        .setUserId(checkIn.getUser().getId())
+        .setCreatedTime(checkIn.getCreatedTime())
         .build();
   }
 }
