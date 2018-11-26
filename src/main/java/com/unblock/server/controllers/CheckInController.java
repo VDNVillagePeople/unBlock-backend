@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,11 @@ public class CheckInController {
 
   @RequestMapping(value = "/v1/checkIns", method = RequestMethod.GET)
   public ListCheckInsForUserResponse getCheckIns(Principal principal) throws Exception {
+    System.out.println(checkInService);
+    System.out.println(principal);
+    System.out.println(principal.getName());
     List<CheckIn> checkIns = checkInService.listByUser(principal.getName());
+    checkIns = (checkIns == null) ? new ArrayList<>() : checkIns;
     return ListCheckInsForUserResponse.newBuilder()
         .addAllCheckIns(
             checkIns.stream().map(CheckInConverter::toProto).collect(Collectors.toList()))

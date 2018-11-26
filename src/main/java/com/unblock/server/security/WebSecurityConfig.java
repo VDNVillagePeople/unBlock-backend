@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -26,14 +28,29 @@ public class WebSecurityConfig {
   }
 
   @Configuration
+  @Order(2)
+  public class ApiSecurityConfigOptions extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+      http.csrf().disable()
+          .requestMatcher(new AntPathRequestMatcher("/v1/**", "OPTIONS"))
+          .authorizeRequests()
+          .antMatchers(HttpMethod.OPTIONS)
+          .permitAll();
+
+    }
+  }
+
+  @Configuration
   public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-      http.antMatcher("/v1/**")
-          .authorizeRequests()
-          .antMatchers(HttpMethod.OPTIONS)
-          .permitAll()
-          .and()
+      http.csrf()
+          .disable()
+          .requestMatcher(new OrRequestMatcher(
+              new AntPathRequestMatcher("/v1/**", "GET"),
+              new AntPathRequestMatcher("/v1/**", "POST"),
+              new AntPathRequestMatcher("/v1/**", "PATCH")))
           // And filter other requests to check the presence of JWT in header
           .addFilterBefore(
               new FirebaseAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
